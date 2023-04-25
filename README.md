@@ -4,6 +4,7 @@ Fancy app for every cactus lover and not only. Checking weather conditions has n
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+![Animation](https://github.com/Maciek0475/Private-things/blob/main/Animation.gif)
 
 ### Prerequisites
 
