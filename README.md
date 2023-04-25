@@ -10,6 +10,12 @@ These instructions will get you a copy of the project up and running on your loc
 To run Cactus-Calendar you will need:
 
 * [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+* MYSQL
+
+### Preparing Database
+
+You have to create database and import `web-app.sql`. In `application.properties`
+you can manipulate connection data as you like.
 
 ### Running Localy
 
