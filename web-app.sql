@@ -85,7 +85,7 @@ CREATE TABLE `users` (
   `username` varchar(45) NOT NULL,
   `password` varchar(64) NOT NULL,
   `role` varchar(45) NOT NULL,
-  `city_id` int(10) NOT NULL
+  `city_id` int(10)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
