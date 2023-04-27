@@ -3,8 +3,23 @@ Fancy app for every cactus lover and not only. Checking weather conditions has n
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+With the Cactus Calendar you can enjoy planning cactus planting without having to check the weather conditions. After selecting the city, the application itself will show you the probability of accepting a cactus. Then just create a schedule on the day that suits you best. When the execution date of the plan has passed, it will go to the "Done" tab. Thanks to secure login, you don't have to worry about your plans. Have fun.
+
 ![Animation](https://github.com/Maciek0475/Private-things/blob/main/Animation.gif)
+
+### Technology Stack
+Mostly used:
+* [Spring Boot](https://spring.io/)
+* [Mysql](https://www.mysql.com/)
+* [Thymeleaf](https://www.thymeleaf.org/)
+* [Bootstrap](https://getbootstrap.com/)
+
+The project is an example of using several technologies, mainly including:
+* Spring Security for register and login
+* Spring Data Jpa for database operations
+* Weather API for weather data
+* Thymeleaf and Bootstrap for frontend
+And others.
 
 ### Prerequisites
 
@@ -34,9 +49,3 @@ mvnw spring-boot:run
 
 See also other projects of [Maciek0475](https://github.com/Maciek0475).
 
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
