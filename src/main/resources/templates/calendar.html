@@ -29,6 +29,7 @@
 </div>
 	</nav>
 	<div class="container">
+	<div th:if="${isCityChosen}">
 		<h1>Welcome in Calendar</h1>
 		<table class="table">
 			<tr>
@@ -62,7 +63,10 @@
 				</td>
 			</tr>
 		</table>
-
+</div>
+<div th:unless="${isCityChosen}" class="bg-success bg-opacity-75 rounded text-dark m-5 p-5">
+<h3>You must choose your city first</h3>
+</div>
 
 	</div>
 </body>
