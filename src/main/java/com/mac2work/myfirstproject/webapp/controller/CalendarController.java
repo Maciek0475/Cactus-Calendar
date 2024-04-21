@@ -26,6 +26,9 @@ public class CalendarController {
 
 	@GetMapping
 	public String buildCalendar(Model model) {
+		boolean isCityChosen = calendarService.getLoggedUser().getCity() != null;
+		model.addAttribute("isCityChosen", isCityChosen);
+		if(isCityChosen)
 		model.addAttribute("dailyForecasts", calendarService.forecast());
 		return "calendar.html";
 	}
