@@ -2,37 +2,37 @@ package com.mac2work.myfirstproject.webapp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.mac2work.myfirstproject.webapp.service.JpaUserDetailsService;
+import com.mac2work.myfirstproject.webapp.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
-
-	private final JpaUserDetailsService jpaUserDetailsService;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-	public SecurityConfiguration(JpaUserDetailsService jpaUserDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
-		this.jpaUserDetailsService = jpaUserDetailsService;
-		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-	}
 	
+	private final UserRepository userRepository;
+
 	@Bean
-	protected SecurityFilterChain configure(HttpSecurity http) throws Exception{
+	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		 http
         		.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
         		.authorizeHttpRequests(auth ->auth
         				.requestMatchers("/register**","/content/guest**", "/login**", "/images/**").permitAll()
         				.anyRequest().authenticated())
-        		.userDetailsService(jpaUserDetailsService)
-        		.headers(headers -> headers.frameOptions().sameOrigin())
         		.formLogin().loginPage("/login")
     			.loginProcessingUrl("/login")
     			.defaultSuccessUrl("/content", true)
@@ -42,20 +42,32 @@ public class SecurityConfiguration {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/content/guest");;
 		return http.build();
-
-
 	}
 	
-
-	    @Bean
-	    public DaoAuthenticationProvider daoAuthenticationProvider() {
-	        DaoAuthenticationProvider provider =
-	                new DaoAuthenticationProvider();
-	        provider.setPasswordEncoder(bCryptPasswordEncoder);
-	        provider.setUserDetailsService(jpaUserDetailsService);
-	        return provider;
-	    }
+	@Bean
+	public DaoAuthenticationProvider daoAuthenticationProvider() {
+	    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+	    provider.setPasswordEncoder(passwordEncoder());
+	    provider.setUserDetailsService(userDetailsService());
+	    return provider;
+	}
 	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return username -> userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException(String.format("User with username: %s not found", username)));
+	}
+	
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
+	    
 	
 	
 	
