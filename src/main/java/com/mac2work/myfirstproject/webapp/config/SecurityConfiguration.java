@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.mac2work.myfirstproject.webapp.repository.UserRepository;
 
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 	
+	private final JwtFilter jwtFilter;
 	private final UserRepository userRepository;
 
 	@Bean
@@ -38,6 +40,7 @@ public class SecurityConfiguration {
     			.defaultSuccessUrl("/content", true)
     		    .failureUrl("/login?error=true")
                 .and()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/content/guest");;
