@@ -1,8 +1,12 @@
 package com.mac2work.myfirstproject.webapp.model;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -13,20 +17,26 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "users")
-public class User {
+public class User implements UserDetails{
 
+	private static final long serialVersionUID = 4147138724239317121L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
-
 	private String username;
-
 	private String password;
-
-	private String role;
+	private Role role;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Plan> plans;
@@ -35,66 +45,41 @@ public class User {
 	@JoinColumn(name = "city_id", nullable = false)
 	private City city;
 
-	public User() {
+	
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority(role.toString()));
 	}
 
-	public User(String username, String password, String role) {
-		this.username = username;
-		this.password = password;
-		this.role = role;
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
 	}
 
-	public Long getId() {
-		return id;
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
 	}
 
-	public String getUsername() {
-		return username;
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
+	@Override
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
-	public List<Plan> getPlans() {
-		return plans;
-	}
-
-	public void setPlans(List<Plan> plans) {
-		this.plans = plans;
-	}
-
 	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + ", plans=" + plans + ", city=" + city + "]";
-	}
-
-	public City getCity() {
-		return city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
+	public String getUsername() {
+		return username;
 	}
 
 	

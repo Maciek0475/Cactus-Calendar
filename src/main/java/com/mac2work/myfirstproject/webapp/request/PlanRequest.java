@@ -1,0 +1,24 @@
+package com.mac2work.myfirstproject.webapp.request;
+
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class PlanRequest {
+	@NotNull(message="date must not be null")
+	private LocalDate date;
+	@NotEmpty(message="note must not be empty")
+	private String note;
+	@NotNull(message="success propability must not be null")
+	private Double successPropability;
+	@NotNull(message="city id must not be null")
+	private Long cityId;
+	@NotNull(message="user id must not be null")
+	private Long userId;
+
+}

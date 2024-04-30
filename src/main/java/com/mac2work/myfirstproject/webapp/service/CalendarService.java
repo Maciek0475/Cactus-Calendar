@@ -58,8 +58,12 @@ public class CalendarService {
 			dailyForecasts.add(null);
 
 		for (HashMap<String, Object> day : days) {
-			dailyForecasts.add(new DailyForecast((double) day.get("temp"), (double) day.get("humidity"),
-					LocalDate.parse((CharSequence) day.get("datetime"))));
+			DailyForecast forecast = DailyForecast.builder()	
+					.temp((double) day.get("temp"))
+					.humidity((double) day.get("humidity"))
+					.date(LocalDate.parse((CharSequence) day.get("datetime")))
+					.build();
+			dailyForecasts.add(forecast);
 		}
 		dailyForecasts = calculateSuccess(dailyForecasts);
 		this.dailyForecasts = dailyForecasts;
