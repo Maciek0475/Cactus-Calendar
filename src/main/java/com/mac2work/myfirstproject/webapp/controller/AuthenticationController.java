@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mac2work.myfirstproject.webapp.model.UserDto;
 import com.mac2work.myfirstproject.webapp.request.UserRequest;
 import com.mac2work.myfirstproject.webapp.service.AuthenticationService;
 
@@ -22,35 +21,19 @@ public class AuthenticationController {
 	private final AuthenticationService authenticationService;
 	
 	@GetMapping("/register")
-	public String getRegisterPage(UserDto userDto, Model model) {
-		model.addAttribute("userDto", userDto);
+	public String getRegisterPage(UserRequest userRequest, Model model) {
+		model.addAttribute("userRequest", userRequest);
 		return "register.html";
 	}
 
 	@PostMapping("/register")
 	public String registerNewUser(@Valid @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
-//		if (result.hasErrors())
-//		    return "/register";
-//		
-//		boolean registerSuccess = authenticationService.register(userDto);
-//		if(registerSuccess) {
-//			return "/login";
-//		}else {
-//				model.addAttribute("error", "This username is already taken");
-//		return "/register";
-//		}
-		model = authenticationService.hasErrors(result, model);
-		return authenticationService.register(userRequest);
+		return authenticationService.register(userRequest, result, model);
 	}
 
 	@PostMapping("/login")
 	public String logIn(@RequestParam(value = "error", defaultValue = "false") boolean loginError, Model model) {
-//		if(loginError) {
-//			model.addAttribute("error", "Invalid data, try again");
-//		}
-//		return "login.html";
-		model = authenticationService.hasErrors(loginError, model);
-		return authenticationService.login();
+		return authenticationService.login(loginError, model);
 	}
 
 	@GetMapping("/logout")

@@ -1,6 +1,13 @@
 package com.mac2work.myfirstproject.webapp.model;
 
-public enum Role {
+import com.fasterxml.jackson.annotation.JsonValue;
+
+public enum Role{
 	USER,
-	ADMIN
+	ADMIN;
+	
+	@JsonValue
+	public String toString() {
+		return super.toString().toLowerCase();
+	}
 }

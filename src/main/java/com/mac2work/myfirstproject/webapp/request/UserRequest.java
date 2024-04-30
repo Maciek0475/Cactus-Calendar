@@ -6,17 +6,21 @@ import com.mac2work.myfirstproject.webapp.model.City;
 import com.mac2work.myfirstproject.webapp.model.Plan;
 import com.mac2work.myfirstproject.webapp.model.Role;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
 public class UserRequest {
-	@NotEmpty(message="username must not be empty")
+	@NotBlank(message="Username may not be empty")
+	@Size(min=5, max=45, message="Username must be at least 5 characters long")
 	private String username;
-	@NotEmpty(message="password must not be empty")
+	@Pattern(regexp="(?=[A-Za-z0-9@#$%^&+!=]+$)^(?=.*[A-Z])(?=.*[0-9])(?=.{8,}).*$", 
+			message="password must be at least 8 characters long, contain 1 capital letter and 1 digit")
 	private String password;
 	@NotNull(message="role must not be empty")
 	private Role role;
