@@ -1,11 +1,12 @@
 package com.mac2work.myfirstproject.webapp.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import com.mac2work.myfirstproject.webapp.config.JwtProvider;
+import com.mac2work.myfirstproject.webapp.model.Role;
 import com.mac2work.myfirstproject.webapp.model.User;
 import com.mac2work.myfirstproject.webapp.repository.UserRepository;
 import com.mac2work.myfirstproject.webapp.request.UserRequest;
@@ -18,7 +19,7 @@ public class AuthenticationService {
 	
 	private final JwtProvider jwtProvider;
 	private final UserRepository userRepository;
-	private final BCryptPasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	public Model hasErrors(BindingResult result, Model model) {
 		if(result.hasErrors())
@@ -40,7 +41,7 @@ public class AuthenticationService {
 			User user = User.builder()
 						.username(userRequest.getUsername())
 						.password(passwordEncoder.encode(userRequest.getPassword()))
-						.role(userRequest.getRole())
+						.role(Role.USER)
 						.build();
 			userRepository.save(user);
 			return "/login";

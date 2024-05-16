@@ -21,8 +21,8 @@ public class AuthenticationController {
 	private final AuthenticationService authenticationService;
 	
 	@GetMapping("/register")
-	public String getRegisterPage(UserRequest userRequest, Model model) {
-		model.addAttribute("userRequest", userRequest);
+	public String getRegisterPage(Model model) {
+		model.addAttribute("userRequest", new UserRequest());
 		return "register.html";
 	}
 
@@ -31,6 +31,10 @@ public class AuthenticationController {
 		return authenticationService.register(userRequest, result, model);
 	}
 
+	@GetMapping("/login")
+	public String getLoginPage() {
+		return "login.html";
+	}
 	@PostMapping("/login")
 	public String logIn(@RequestParam(value = "error", defaultValue = "false") boolean loginError, Model model) {
 		return authenticationService.login(loginError, model);
