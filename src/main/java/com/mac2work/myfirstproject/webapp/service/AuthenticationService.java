@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import com.mac2work.myfirstproject.webapp.config.JwtProvider;
-import com.mac2work.myfirstproject.webapp.model.Role;
 import com.mac2work.myfirstproject.webapp.model.User;
 import com.mac2work.myfirstproject.webapp.repository.UserRepository;
 import com.mac2work.myfirstproject.webapp.request.UserRequest;
@@ -21,14 +20,10 @@ public class AuthenticationService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	public Model hasErrors(BindingResult result, Model model) {
-		if(result.hasErrors())
-			model.addAttribute("error", "This username is already taken");
-		return model;
-	}
 	
-	public Model hasErrors(boolean loginError, Model model) {
-		if(loginError)
+	
+	public Model hasErrors(boolean hasErrors, Model model) {
+		if(hasErrors)
 			model.addAttribute("error", "Invalid data, try again");
 		return model;
 	}
@@ -37,11 +32,11 @@ public class AuthenticationService {
 		model = hasErrors(result.hasErrors(), model);
 		if(userRepository.findByUsername(userRequest.getUsername()).isPresent())
 			model.addAttribute("error", "This username is already taken");
-		else {
+		else if(!result.hasErrors()) {
 			User user = User.builder()
 						.username(userRequest.getUsername())
 						.password(passwordEncoder.encode(userRequest.getPassword()))
-						.role(Role.USER)
+						.role(userRequest.getRole())
 						.build();
 			userRepository.save(user);
 			return "/login";
@@ -49,10 +44,11 @@ public class AuthenticationService {
 		return "/register";
 	}
 
-	public String login(boolean loginError, Model model) {
-		model = hasErrors(loginError, model);
+	public String login(BindingResult result, Model model) {
+		model = hasErrors(result.hasErrors(), model);
+		System.out.println(result.getAllErrors());
 		String username;
-		if(!loginError) {
+		if(!result.hasErrors()) {
 			username = String.valueOf(model.getAttribute("username"));
 			jwtProvider.generateToken(username);
 		}

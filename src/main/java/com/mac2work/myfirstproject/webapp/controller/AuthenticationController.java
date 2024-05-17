@@ -4,9 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mac2work.myfirstproject.webapp.request.UserRequest;
 import com.mac2work.myfirstproject.webapp.service.AuthenticationService;
@@ -27,7 +25,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/register")
-	public String registerNewUser(@Valid @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
+	public String registerNewUser(@Valid  UserRequest userRequest, BindingResult result, Model model) {
 		return authenticationService.register(userRequest, result, model);
 	}
 
@@ -36,8 +34,8 @@ public class AuthenticationController {
 		return "login.html";
 	}
 	@PostMapping("/login")
-	public String logIn(@RequestParam(value = "error", defaultValue = "false") boolean loginError, Model model) {
-		return authenticationService.login(loginError, model);
+	public String logIn(BindingResult result, Model model) {
+		return authenticationService.login(result, model);
 	}
 
 	@GetMapping("/logout")

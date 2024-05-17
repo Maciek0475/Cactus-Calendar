@@ -45,6 +45,7 @@
 							<div class="alert alert-warning"
 								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 						</div>
+							<input type="hidden" name="role" value="USER" id="role"/>
 						<input class="btn btn-primary btn-success" type="submit"
 							value="Sign up!" />
 					</div>
