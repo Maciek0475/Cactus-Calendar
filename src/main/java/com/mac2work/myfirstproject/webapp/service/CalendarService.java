@@ -1,21 +1,28 @@
 package com.mac2work.myfirstproject.webapp.service;
 
 import java.time.LocalDate;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mac2work.myfirstproject.webapp.model.City;
 import com.mac2work.myfirstproject.webapp.model.DailyForecast;
+import com.mac2work.myfirstproject.webapp.model.Plan;
 import com.mac2work.myfirstproject.webapp.model.User;
 import com.mac2work.myfirstproject.webapp.repository.UserRepository;
 
@@ -32,10 +39,12 @@ public class CalendarService {
 		this.userRepository = userRepository;
 	} 
 
-	public List<DailyForecast> forecast(Double...geoArgs) {
-		
-		Double lat = (geoArgs.length == 2)? geoArgs[0] : getLoggedUser().getCity().getLat();
-		Double lon = (geoArgs.length == 2)? geoArgs[1] : getLoggedUser().getCity().getLon();
+	public String forecast( Model model, Double...geoArgs) {
+		City city = getCity();
+		boolean isCityChosen = city != null;
+		if(isCityChosen) {
+		Double lat = (geoArgs.length == 2)? geoArgs[0] : city.getLat();
+		Double lon = (geoArgs.length == 2)? geoArgs[1] : city.getLon();
 		String FORECAST_API_URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
 				+ lat
 				+","
@@ -52,38 +61,39 @@ public class CalendarService {
 		}
 
 		ArrayList<HashMap<String, Object>> days = (ArrayList<HashMap<String, Object>>) map.get("days");
-		List<DailyForecast> dailyForecasts = new ArrayList<>();
 
+		LinkedList<DailyForecast> dailyForecasts = days.stream().map(
+				day -> DailyForecast.builder()	
+				.temp((double) day.get("temp"))
+				.humidity((double) day.get("humidity"))
+				.date(LocalDate.parse((CharSequence) day.get("datetime")))
+				.build())
+				.collect(Collectors.toCollection(LinkedList::new));
+		
 		for (int i = 1; i < LocalDate.now().getDayOfWeek().getValue(); i++)
-			dailyForecasts.add(null);
-
-		for (HashMap<String, Object> day : days) {
-			DailyForecast forecast = DailyForecast.builder()	
-					.temp((double) day.get("temp"))
-					.humidity((double) day.get("humidity"))
-					.date(LocalDate.parse((CharSequence) day.get("datetime")))
-					.build();
-			dailyForecasts.add(forecast);
+			dailyForecasts.addFirst(null);
+		
+		dailyForecasts = dailyForecasts.stream().
+				map(dailyForecast -> calculateSuccess(dailyForecast)).collect(Collectors.toCollection(LinkedList::new));
+		model.addAttribute("isCityChosen", isCityChosen);
+		model.addAttribute("dailyForecasts", dailyForecasts);
 		}
-		dailyForecasts = calculateSuccess(dailyForecasts);
-		this.dailyForecasts = dailyForecasts;
-		return dailyForecasts;
+		return "calendar.html";
 	}
 
-	public User getLoggedUser() {
+	private City getCity() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = null;
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			String currentUsername = authentication.getName();
 			user = userRepository.findByUsername(currentUsername).get();
 		}
-		return user;
+		return user.getCity();
 
 	}
 
-	public List<DailyForecast> calculateSuccess(List<DailyForecast> dailyForecasts) {
+	public DailyForecast calculateSuccess(DailyForecast dailyForecast) {
 
-		for (DailyForecast dailyForecast : dailyForecasts) {
 			if (dailyForecast != null) {
 				dailyForecast.getTemp();
 				humiditySuccess = Math.abs(dailyForecast.getHumidity() - goodHumidity);
@@ -97,16 +107,20 @@ public class CalendarService {
 				tempSuccess = ((100 - tempSuccess * tempMultiplier) / 100 < 0) ? 0
 						: (100 - tempSuccess * tempMultiplier) / 100;
 				dailyForecast.setSuccess(tempSuccess * humiditySuccess * 100);
-
+				
+				return dailyForecast;
 			}
-		}
-		return dailyForecasts;
+		return null;
 	}
 
-	public DailyForecast getDailyForecast(int dayOfMonth) {
-		Optional<DailyForecast> dailyForecast = dailyForecasts.stream().filter(d -> Objects.nonNull(d))
-				.filter(d -> d.getDate().getDayOfMonth() == dayOfMonth).findFirst();
-		return dailyForecast.get();
+	public String getDailyForecast(int dayOfMonth, Plan plan, Model model) {
+		DailyForecast dailyForecast = dailyForecasts.stream().filter(d -> Objects.nonNull(d))
+				.filter(d -> d.getDate().getDayOfMonth() == dayOfMonth).findFirst().get();
+		
+		model.addAttribute("city", getCity());
+		model.addAttribute("plan", plan);
+		model.addAttribute("dailyForecast", dailyForecast);
+		return "new-plan.html";
 	}
 
 }
