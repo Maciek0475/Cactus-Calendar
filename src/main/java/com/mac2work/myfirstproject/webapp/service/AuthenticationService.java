@@ -1,5 +1,7 @@
 package com.mac2work.myfirstproject.webapp.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -44,15 +46,11 @@ public class AuthenticationService {
 		return "/register";
 	}
 
-	public String login(BindingResult result, Model model) {
-		model = hasErrors(result.hasErrors(), model);
-		System.out.println(result.getAllErrors());
-		String username;
-		if(!result.hasErrors()) {
-			username = String.valueOf(model.getAttribute("username"));
-			jwtProvider.generateToken(username);
-		}
-		return "/login";
+	public String loginToken() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = String.valueOf(auth.getName());
+		jwtProvider.generateToken(username);
+		return "redirect:/content";
 	}
 
 

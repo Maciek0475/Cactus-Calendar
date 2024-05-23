@@ -37,7 +37,7 @@ public class SecurityConfiguration {
         				.anyRequest().authenticated())
         		.formLogin().loginPage("/login")
     			.loginProcessingUrl("/login")
-    			.defaultSuccessUrl("/content", true)
+    			.defaultSuccessUrl("/login-token", true)
     		    .failureUrl("/login?error=true")
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

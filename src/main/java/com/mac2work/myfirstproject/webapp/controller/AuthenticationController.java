@@ -33,9 +33,9 @@ public class AuthenticationController {
 	public String getLoginPage() {
 		return "login.html";
 	}
-	@PostMapping("/login")
-	public String logIn(BindingResult result, Model model) {
-		return authenticationService.login(result, model);
+	@GetMapping("/login-token")
+	public String loginToken() {
+		return authenticationService.loginToken();
 	}
 
 	@GetMapping("/logout")
