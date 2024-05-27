@@ -1,11 +1,5 @@
 package com.mac2work.myfirstproject.webapp.request;
 
-import java.util.List;
-
-import com.mac2work.myfirstproject.webapp.model.City;
-import com.mac2work.myfirstproject.webapp.model.Plan;
-import com.mac2work.myfirstproject.webapp.model.Role;
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

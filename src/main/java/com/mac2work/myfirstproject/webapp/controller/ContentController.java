@@ -7,21 +7,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.mac2work.myfirstproject.webapp.service.ContentService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping("/content")
+@RequiredArgsConstructor
 public class ContentController {
-	
 	private final ContentService contentService;
 
-	public ContentController(ContentService contentService) {
-		this.contentService = contentService;
-	}
 	@GetMapping
 	public String getContentPage(Model model) {
-		model.addAttribute("user", contentService.getLoggedUser());
-		model.addAttribute("undonePlansCount", contentService.getPlansCount(false));
-		return "content.html";
+		return contentService.getPlansCount(model, false);
 	}
+	
 	@GetMapping("/guest")
 	public String getGuestPage() {
 		return "guest-content.html";

@@ -34,10 +34,7 @@ public class CalendarController {
 	
 	@PostMapping("/new-plan")
 	public String saveNewPlan(@ModelAttribute Plan plan) {
-		System.out.println(plan);
-		planService.assignUser(plan);
-		planService.save(plan);
-		return "new-plan-success.html";
+		return planService.saveNewPlan(plan);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.mac2work.myfirstproject.webapp.model.City;
 import com.mac2work.myfirstproject.webapp.model.User;
@@ -30,11 +31,10 @@ public class MyAccountService {
 		return cities;
 	}
 
-	public void setCity(City city) {
-
+	public String setCity(City city) {
 		city = cityRepository.findById(city.getId()).get();
 		userRepository.UpdateCityIdByName(city, getLoggedUser().getUsername());
-
+		return "redirect:/my-account";
 	}
 
 	public User getLoggedUser() {
@@ -46,5 +46,12 @@ public class MyAccountService {
 		}
 		return user;
 
+	}
+
+	public String getAccountInfo(Model model, City city) {
+		model.addAttribute("user", getLoggedUser());
+		model.addAttribute("cities", getCities());
+		model.addAttribute("city", city);
+		return "my-account.html";
 	}
 }
