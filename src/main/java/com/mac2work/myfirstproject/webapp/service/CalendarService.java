@@ -29,17 +29,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CalendarService {
 	@Value("${mac2work.forecast.good.temperature}")
-	private static Double GOOD_TEMP;
+	private Double GOOD_TEMP;
 	@Value("${mac2work.forecast.good.humidity}")
-	private static Double GOOD_HUMIDITY;
+	private Double GOOD_HUMIDITY;
 	@Value("${mac2work.forecast.multiplier.temperature}")
-	private static Double TEMPERATURE_MULTIPLIER;
+	private Double TEMPERATURE_MULTIPLIER;
 	@Value("${mac2work.forecast.multiplier.humidity}")
-	private static Double HUMIDITY_MULTIPLIER;
+	private Double HUMIDITY_MULTIPLIER;
 	@Value("${mac2work.forecast.url.prefix}")
-	private static String API_URL_PREFIX;
+	private String API_URL_PREFIX;
 	@Value("${mac2work.forecast.url.suffix}")
-	private static String API_URL_SUFFIX;
+	private String API_URL_SUFFIX;
 	private final UserRepository userRepository;
 	
 
@@ -61,7 +61,6 @@ public class CalendarService {
 				+","
 				+ lon
 				+ API_URL_SUFFIX;
-		System.out.println(FORECAST_API_URL);
 		RestTemplate restTemplate = new RestTemplate();
 		String result = restTemplate.getForObject(FORECAST_API_URL, String.class);
 		HashMap<T1, T2> map = null;
@@ -113,7 +112,7 @@ public class CalendarService {
 					finalTempMultiplier = TEMPERATURE_MULTIPLIER * -1.5;
 				tempSuccess = ((100 - tempSuccess * finalTempMultiplier) / 100 < 0) ? 0
 						: (100 - tempSuccess * finalTempMultiplier) / 100;
-				dailyForecast.setSuccess(tempSuccess * humiditySuccess * 100);
+				dailyForecast.setSuccess(Double.valueOf( (int) (tempSuccess * humiditySuccess * 100) * 100 ) / 100);
 				
 				return dailyForecast;
 			}
