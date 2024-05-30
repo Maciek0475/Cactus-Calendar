@@ -8,20 +8,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mac2work.myfirstproject.webapp.service.PlanService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping("/plans")
+@RequiredArgsConstructor
 public class PlansController {
 	private final PlanService planService;
 
-	public PlansController(PlanService planService) {
-		this.planService = planService;
-	}
-
 	@GetMapping
 	public String showPlans(Model model) {
-
-		model.addAttribute("plans", planService.filterByDoneStatus(planService.findAllByUser(), false));
-		return "plans.html";
+		return planService.filterByDoneStatus(model, false);
 	}
 
 	@GetMapping("/remove")

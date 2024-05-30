@@ -12,41 +12,29 @@ import com.mac2work.myfirstproject.webapp.model.Plan;
 import com.mac2work.myfirstproject.webapp.service.CalendarService;
 import com.mac2work.myfirstproject.webapp.service.PlanService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
 
 	private final CalendarService calendarService;
 	private final PlanService planService;
 
-	public CalendarController(CalendarService calendarService, PlanService planService) {
-		this.calendarService = calendarService;
-		this.planService = planService;
-	}
-
 	@GetMapping
 	public String buildCalendar(Model model) {
-		boolean isCityChosen = calendarService.getLoggedUser().getCity() != null;
-		model.addAttribute("isCityChosen", isCityChosen);
-		if(isCityChosen)
-		model.addAttribute("dailyForecasts", calendarService.forecast());
-		return "calendar.html";
+		return calendarService.forecast(model);
 	}
 	
 	@GetMapping("/new-plan")
 	public String planNewPlan( @RequestParam("month") int month, Plan plan, Model model) {
-		model.addAttribute("user", calendarService.getLoggedUser());
-		model.addAttribute("plan", plan);
-		model.addAttribute("dailyForecast", calendarService.getDailyForecast(month));
-		return "new-plan.html";
+		return calendarService.getDailyForecast(month, plan, model);
 	}
 	
 	@PostMapping("/new-plan")
 	public String saveNewPlan(@ModelAttribute Plan plan) {
-		System.out.println(plan);
-		planService.assignUser(plan);
-		planService.save(plan);
-		return "new-plan-success.html";
+		return planService.saveNewPlan(plan);
 	}
 
 }

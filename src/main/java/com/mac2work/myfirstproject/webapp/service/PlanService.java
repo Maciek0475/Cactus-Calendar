@@ -9,24 +9,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import com.mac2work.myfirstproject.webapp.model.Plan;
 import com.mac2work.myfirstproject.webapp.repository.PlanRepository;
 import com.mac2work.myfirstproject.webapp.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PlanService {
 
 	private final PlanRepository planRepository;
 	private final UserRepository userRepository;
 	private final CalendarService calendarService;
-
-	public PlanService(PlanRepository planRepository, UserRepository userRepository, CalendarService calendarService) {
-		this.planRepository = planRepository;
-		this.userRepository = userRepository;
-		this.calendarService = calendarService;
-	}
 
 	public List<Plan> findAllByUser() {
 		List<Plan> plans = new ArrayList<>();
@@ -40,15 +38,11 @@ public class PlanService {
 		return plans;
 	}
 	
-	public List<Plan> filterByDoneStatus(List<Plan> plans, boolean doneStatus){
+	public String filterByDoneStatus(Model model, boolean doneStatus){
+		List<Plan> plans = findAllByUser();
 		plans = plans.stream().filter(p -> p.isDone() == doneStatus).toList();
-		return plans;
-	}
-
-	public void save(Plan plan) {
-
-		planRepository.save(plan);
-
+		model.addAttribute("plans", plans);
+		return doneStatus? "done.html" : "plans.html";
 	}
 
 	public void assignUser(Plan plan) {
@@ -57,7 +51,6 @@ public class PlanService {
 			String currentUserName = authentication.getName();
 			plan.setUser(userRepository.findByUsername(currentUserName).get());
 		}
-
 	}
 
 	public void deletePlanById(Long id) {
@@ -65,19 +58,20 @@ public class PlanService {
 	}
 
 	public void updatePlans(List<Plan> plans) {
-		for (Plan plan : plans) {
+		plans.stream().forEach(plan -> {
 			if (plan.getDate().isBefore(LocalDate.now()))
 				planRepository.updateIsDoneById(plan.getId(), true);
 			else {
-				calendarService.forecast(plan.getCity().getLat(), plan.getCity().getLon());
 				planRepository.updateSuccessPropabilityById(plan.getId(),
-						calendarService.getDailyForecast(plan.getDate().getDayOfMonth()).getSuccess());
+				calendarService.getDailyForecast(plan.getDate().getDayOfMonth()).getSuccess());
 			}
-			
-		}
-		
-		
+		});
+	}
 
+	public String saveNewPlan(Plan plan) {
+		assignUser(plan);
+		planRepository.save(plan);
+		return "new-plan-success.html";
 	}
 
 }

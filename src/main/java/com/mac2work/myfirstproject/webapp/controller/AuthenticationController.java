@@ -4,9 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mac2work.myfirstproject.webapp.request.UserRequest;
 import com.mac2work.myfirstproject.webapp.service.AuthenticationService;
@@ -21,19 +19,23 @@ public class AuthenticationController {
 	private final AuthenticationService authenticationService;
 	
 	@GetMapping("/register")
-	public String getRegisterPage(UserRequest userRequest, Model model) {
-		model.addAttribute("userRequest", userRequest);
+	public String getRegisterPage(Model model) {
+		model.addAttribute("userRequest", new UserRequest());
 		return "register.html";
 	}
 
 	@PostMapping("/register")
-	public String registerNewUser(@Valid @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
+	public String registerNewUser(@Valid  UserRequest userRequest, BindingResult result, Model model) {
 		return authenticationService.register(userRequest, result, model);
 	}
 
-	@PostMapping("/login")
-	public String logIn(@RequestParam(value = "error", defaultValue = "false") boolean loginError, Model model) {
-		return authenticationService.login(loginError, model);
+	@GetMapping("/login")
+	public String getLoginPage() {
+		return "login.html";
+	}
+	@GetMapping("/login-token")
+	public String loginToken() {
+		return authenticationService.loginToken();
 	}
 
 	@GetMapping("/logout")

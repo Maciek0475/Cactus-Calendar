@@ -3,47 +3,67 @@ package com.mac2work.myfirstproject.webapp.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mac2work.myfirstproject.webapp.model.City;
 import com.mac2work.myfirstproject.webapp.model.DailyForecast;
+import com.mac2work.myfirstproject.webapp.model.Plan;
 import com.mac2work.myfirstproject.webapp.model.User;
 import com.mac2work.myfirstproject.webapp.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CalendarService {
-	private final double goodTemp = 21;
-	private final double goodHumidity = 50;
+	@Value("${mac2work.forecast.good.temperature}")
+	private Double GOOD_TEMP;
+	@Value("${mac2work.forecast.good.humidity}")
+	private Double GOOD_HUMIDITY;
+	@Value("${mac2work.forecast.multiplier.temperature}")
+	private Double TEMPERATURE_MULTIPLIER;
+	@Value("${mac2work.forecast.multiplier.humidity}")
+	private Double HUMIDITY_MULTIPLIER;
+	@Value("${mac2work.forecast.url.prefix}")
+	private String API_URL_PREFIX;
+	@Value("${mac2work.forecast.url.suffix}")
+	private String API_URL_SUFFIX;
 	private final UserRepository userRepository;
-	private double humiditySuccess;
-	private double tempSuccess;
-	private List<DailyForecast> dailyForecasts;
+	
 
-	public CalendarService(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	} 
+	public String forecast( Model model) {
+		City city = getCity();
+		boolean isCityChosen = city != null;
+		if(isCityChosen) {
+		LinkedList<DailyForecast> dailyForecasts = forecast(city.getLat(), city.getLon());
+		model.addAttribute("isCityChosen", isCityChosen);
+		model.addAttribute("dailyForecasts", dailyForecasts);
+		}
+		return "calendar.html";
+	}
 
-	public List<DailyForecast> forecast(Double...geoArgs) {
-		
-		Double lat = (geoArgs.length == 2)? geoArgs[0] : getLoggedUser().getCity().getLat();
-		Double lon = (geoArgs.length == 2)? geoArgs[1] : getLoggedUser().getCity().getLon();
-		String FORECAST_API_URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
+	@SuppressWarnings("unchecked")
+	public <T1, T2> LinkedList<DailyForecast> forecast(Double lat, Double lon) {
+		String FORECAST_API_URL = API_URL_PREFIX
 				+ lat
 				+","
 				+ lon
-				+ "?unitGroup=metric&elements=datetime,temp,humidity,icon&include=days&key=3XQ3BGCW8Y9TEGLCV9642PV7D&contentType=json";
+				+ API_URL_SUFFIX;
 		RestTemplate restTemplate = new RestTemplate();
 		String result = restTemplate.getForObject(FORECAST_API_URL, String.class);
-		HashMap<String, Object> map = null;
+		HashMap<T1, T2> map = null;
 
 		try {
 			map = new ObjectMapper().readValue(result, HashMap.class);
@@ -51,62 +71,66 @@ public class CalendarService {
 			e.printStackTrace();
 		}
 
-		ArrayList<HashMap<String, Object>> days = (ArrayList<HashMap<String, Object>>) map.get("days");
-		List<DailyForecast> dailyForecasts = new ArrayList<>();
+		ArrayList<HashMap<T1, T2>> days = (ArrayList<HashMap<T1, T2>>) map.get("days");
 
+		LinkedList<DailyForecast> dailyForecasts = days.stream().map(
+				day -> DailyForecast.builder()	
+				.temp((double) day.get("temp"))
+				.humidity((double) day.get("humidity"))
+				.date(LocalDate.parse((CharSequence) day.get("datetime")))
+				.build())
+				.collect(Collectors.toCollection(LinkedList::new));
+		
 		for (int i = 1; i < LocalDate.now().getDayOfWeek().getValue(); i++)
-			dailyForecasts.add(null);
-
-		for (HashMap<String, Object> day : days) {
-			DailyForecast forecast = DailyForecast.builder()	
-					.temp((double) day.get("temp"))
-					.humidity((double) day.get("humidity"))
-					.date(LocalDate.parse((CharSequence) day.get("datetime")))
-					.build();
-			dailyForecasts.add(forecast);
-		}
-		dailyForecasts = calculateSuccess(dailyForecasts);
-		this.dailyForecasts = dailyForecasts;
-		return dailyForecasts;
+			dailyForecasts.addFirst(null);
+		
+		return dailyForecasts.stream().
+				map(dailyForecast -> calculateSuccess(dailyForecast)).collect(Collectors.toCollection(LinkedList::new));
 	}
 
-	public User getLoggedUser() {
+	private City getCity() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = null;
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			String currentUsername = authentication.getName();
 			user = userRepository.findByUsername(currentUsername).get();
 		}
-		return user;
-
+		return user.getCity();
 	}
 
-	public List<DailyForecast> calculateSuccess(List<DailyForecast> dailyForecasts) {
-
-		for (DailyForecast dailyForecast : dailyForecasts) {
+	public DailyForecast calculateSuccess(DailyForecast dailyForecast) {
 			if (dailyForecast != null) {
+				
 				dailyForecast.getTemp();
-				humiditySuccess = Math.abs(dailyForecast.getHumidity() - goodHumidity);
-				tempSuccess = dailyForecast.getTemp() - goodTemp;
-				double tempMultiplier = 4;
-				double humidityMultiplier = 3;
-				humiditySuccess = ((100 - humiditySuccess * humidityMultiplier) / 100 < 0) ? 0
-						: (100 - humiditySuccess * humidityMultiplier) / 100;
+				Double humiditySuccess = Math.abs(dailyForecast.getHumidity() - GOOD_HUMIDITY);
+				Double tempSuccess = dailyForecast.getTemp() - GOOD_TEMP;
+				humiditySuccess = ((100 - humiditySuccess * HUMIDITY_MULTIPLIER) / 100 < 0) ? 0
+						: (100 - humiditySuccess * HUMIDITY_MULTIPLIER) / 100;
+				
+				Double finalTempMultiplier = 1.0;
 				if (tempSuccess < 0)
-					tempMultiplier *= -1.5;
-				tempSuccess = ((100 - tempSuccess * tempMultiplier) / 100 < 0) ? 0
-						: (100 - tempSuccess * tempMultiplier) / 100;
-				dailyForecast.setSuccess(tempSuccess * humiditySuccess * 100);
-
+					finalTempMultiplier = TEMPERATURE_MULTIPLIER * -1.5;
+				tempSuccess = ((100 - tempSuccess * finalTempMultiplier) / 100 < 0) ? 0
+						: (100 - tempSuccess * finalTempMultiplier) / 100;
+				dailyForecast.setSuccess(Double.valueOf( (int) (tempSuccess * humiditySuccess * 100) * 100 ) / 100);
+				
+				return dailyForecast;
 			}
-		}
-		return dailyForecasts;
+		return null;
+	}
+
+	public String getDailyForecast(int dayOfMonth, Plan plan, Model model) {
+		DailyForecast dailyForecast = getDailyForecast(dayOfMonth);
+		model.addAttribute("city", getCity());
+		model.addAttribute("plan", plan);
+		model.addAttribute("dailyForecast", dailyForecast);
+		return "new-plan.html";
 	}
 
 	public DailyForecast getDailyForecast(int dayOfMonth) {
-		Optional<DailyForecast> dailyForecast = dailyForecasts.stream().filter(d -> Objects.nonNull(d))
-				.filter(d -> d.getDate().getDayOfMonth() == dayOfMonth).findFirst();
-		return dailyForecast.get();
+		City city = getCity();
+		DailyForecast dailyForecast = forecast(city.getLat(), city.getLon()).stream().filter(d -> Objects.nonNull(d))
+				.filter(d -> d.getDate().getDayOfMonth() == dayOfMonth).findFirst().get();
+		return dailyForecast;
 	}
-
 }

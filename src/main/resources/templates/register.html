@@ -31,7 +31,7 @@
 			<h1>Create new Account</h1>
 			<div class="bg-success bg-opacity-75 rounded p-3">
 				<form class=" well" name="f" method="post" th:action="@{/register}"
-					th:object="${userDto}">
+					th:object="${userRequest}">
 					<div class="form-group">
 						<div>
 							<input class="form-control" name="username"
@@ -45,6 +45,7 @@
 							<div class="alert alert-warning"
 								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 						</div>
+							<input type="hidden" name="role" value="USER" id="role"/>
 						<input class="btn btn-primary btn-success" type="submit"
 							value="Sign up!" />
 					</div>

@@ -24,7 +24,7 @@
 			<label class="fw-bold">Date: <span
 				th:text="${dailyForecast.getDate}"></span>
 			</label> <label class="fw-bold">City: <span th:field="*{city}"
-				th:text="${user.getCity.getName}"></span>
+				th:text="${city.getName}"></span>
 			</label> <label class="label text-dark fw-bold">Propability of
 				success: <progress class="progress-bar bg-success "
 					th:value="${dailyForecast.getSuccess}" max="100"></progress>
@@ -45,7 +45,7 @@
 							th:value="${dailyForecast.getSuccess}"
 							th:attr="name='successPropability'" /> <input
 							class="form-control" name="city" placeholder="City" type="hidden"
-							th:value="${user.getCity.getId}" th:attr="name='city'" />
+							th:value="${city.getId}" th:attr="name='city'" />
 
 
 					</div>

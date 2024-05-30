@@ -33,11 +33,11 @@ public class SecurityConfiguration {
 		 http
         		.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
         		.authorizeHttpRequests(auth ->auth
-        				.requestMatchers("/register**","/content/guest**", "/login**", "/images/**").permitAll()
+        				.requestMatchers("/register**","/content/guest**", "/login**", "/images/**", "/error**").permitAll()
         				.anyRequest().authenticated())
         		.formLogin().loginPage("/login")
     			.loginProcessingUrl("/login")
-    			.defaultSuccessUrl("/content", true)
+    			.defaultSuccessUrl("/login-token", true)
     		    .failureUrl("/login?error=true")
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

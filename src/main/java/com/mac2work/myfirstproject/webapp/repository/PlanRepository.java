@@ -2,14 +2,14 @@ package com.mac2work.myfirstproject.webapp.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.mac2work.myfirstproject.webapp.model.Plan;
 
-public interface PlanRepository extends CrudRepository<Plan, Long>{
+public interface PlanRepository extends JpaRepository<Plan, Long>{
 	
 	@Query("SELECT u FROM plans u WHERE u.isDone = '0'")
 	public List<Plan> findAllUndone();

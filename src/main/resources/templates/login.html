@@ -45,8 +45,8 @@
 					</div>
 				</form>
 				<div class="alert alert-warning"
-					th:style="${error!=null ? 'visibility:visible' : 'visibility:hidden'}"
-					th:text="${error}"></div>
+					th:style="${param.error !=null ? 'visibility:visible' : 'visibility:hidden'}">
+					Invalid data, try again</div>
 				<a href="/register" class="btn btn-success">or else sign up</a>
 			</div>
 		</div>
