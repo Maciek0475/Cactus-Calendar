@@ -1,30 +1,37 @@
 package com.mac2work.cactus_user_panel.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.mac2work.myfirstproject.webapp.model.City;
-import com.mac2work.myfirstproject.webapp.service.MyAccountService;
+import com.mac2work.cactus_user_panel.response.CityResponse;
+import com.mac2work.cactus_user_panel.response.UserResponse;
+import com.mac2work.cactus_user_panel.service.MyAccountService;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/my-account")
+@RequestMapping("/api/my-account")
 @RequiredArgsConstructor
 public class MyAccountController {
 	private final MyAccountService myAccountService;
 
 	@GetMapping
-	public String getAccountInfo(Model model, City city) {
-		return myAccountService.getAccountInfo(model, city);
+	public UserResponse getAccountInfo() {
+		return myAccountService.getAccountInfo();
 	}
 	
-	@PostMapping("/choose-city")
-	public String setAccountCity(@ModelAttribute City city) {
-		return myAccountService.setCity(city);
+	@GetMapping("/cities")
+	public List<CityResponse> getCities() {
+		return myAccountService.getCities();
+	}
+	
+	@PatchMapping("/set-city/{id}")
+	public UserResponse setAccountCity(@PathVariable Long id) {
+		return myAccountService.setCity(id);
 	}
 }

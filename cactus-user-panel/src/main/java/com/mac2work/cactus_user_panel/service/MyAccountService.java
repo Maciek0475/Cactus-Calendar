@@ -1,40 +1,37 @@
 package com.mac2work.cactus_user_panel.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import com.mac2work.myfirstproject.webapp.model.City;
-import com.mac2work.myfirstproject.webapp.model.User;
-import com.mac2work.myfirstproject.webapp.repository.CityRepository;
-import com.mac2work.myfirstproject.webapp.repository.UserRepository;
+import com.mac2work.cactus_user_panel.model.City;
+import com.mac2work.cactus_user_panel.model.User;
+import com.mac2work.cactus_user_panel.repository.CityRepository;
+import com.mac2work.cactus_user_panel.repository.UserRepository;
+import com.mac2work.cactus_user_panel.response.CityResponse;
+import com.mac2work.cactus_user_panel.response.UserResponse;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class MyAccountService {
 
 	private final CityRepository cityRepository;
 	private final UserRepository userRepository;
 
-	public MyAccountService(CityRepository cityRepository, UserRepository userRepository) {
-		this.cityRepository = cityRepository;
-		this.userRepository = userRepository;
-	}
-
-	public List<City> getCities() {
-		List<City> cities = new ArrayList<>();
-		cities = (List<City>) cityRepository.findAll();
+	public List<CityResponse> getCities() {
+		List<CityResponse> cities = cityRepository.findAll()
+				.stream().map(city -> mapToCityResponse(city)).toList();
 		return cities;
 	}
 
-	public String setCity(City city) {
-		city = cityRepository.findById(city.getId()).get();
-		userRepository.UpdateCityIdByName(city, getLoggedUser().getUsername());
-		return "redirect:/my-account";
+	public UserResponse setCity(Long id) {
+		User user = userRepository.UpdateCityIdById(id, getLoggedUser().getId());
+		return mapToUserResponse(user);
 	}
 
 	public User getLoggedUser() {
@@ -48,10 +45,24 @@ public class MyAccountService {
 
 	}
 
-	public String getAccountInfo(Model model, City city) {
-		model.addAttribute("user", getLoggedUser());
-		model.addAttribute("cities", getCities());
-		model.addAttribute("city", city);
-		return "my-account.html";
+	public UserResponse getAccountInfo() {
+		User user = getLoggedUser();
+		return mapToUserResponse(user);
+	}
+
+	private UserResponse mapToUserResponse(User user) {
+		return UserResponse.builder()
+				.username(user.getUsername())
+				.role(user.getRole())
+				.city(mapToCityResponse(user.getCity()))
+				.build();
+	}
+
+	private CityResponse mapToCityResponse(City city) {
+		return CityResponse.builder()
+				.name(city.getName())
+				.lat(city.getLat())
+				.lon(city.getLon())
+				.build();
 	}
 }
