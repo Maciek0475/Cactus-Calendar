@@ -3,8 +3,6 @@ package com.mac2work.plans.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,20 +23,20 @@ public class PlansController {
 	private final PlansService plansService;
 	
 	@GetMapping("/{status}")
-	public ResponseEntity<List<PlanResponse>> getPlansByDoneStatus(@PathVariable Boolean status){
+	public List<PlanResponse> getPlansByDoneStatus(@PathVariable Boolean status){
 		List<PlanResponse> planResponses = plansService.getPlansByDoneStatus(status);
-		return new ResponseEntity<>(planResponses, HttpStatus.OK);
+		return planResponses;
 	}
 	
 	@PostMapping("/{date}/{note}/{successPropability}")
-	public ResponseEntity<PlanResponse> saveNewPlan(@PathVariable LocalDate date, @PathVariable String note, @PathVariable Double successPropability) {
+	public PlanResponse saveNewPlan(@PathVariable LocalDate date, @PathVariable String note, @PathVariable Double successPropability) {
 		PlanResponse planResponse = plansService.saveNewPlan(date, note, successPropability);
-		return new ResponseEntity<>(planResponse, HttpStatus.CREATED);
+		return planResponse;
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<PlansResponse> deletePlan(@PathVariable Long id){
+	public PlansResponse deletePlan(@PathVariable Long id){
 		PlansResponse plansResponse = plansService.deletePlan(id);
-		return new ResponseEntity<>(plansResponse, HttpStatus.OK);
+		return plansResponse;
 	}
 }

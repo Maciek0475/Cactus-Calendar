@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+import com.mac2work.calendar.request.PlanRequest;
+import com.mac2work.calendar.service.CalendarService;
+import com.mac2work.calendar.service.PlanService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
-
 	private final CalendarService calendarService;
 	private final PlanService planService;
 
@@ -26,12 +27,12 @@ public class CalendarController {
 	}
 	
 	@GetMapping("/new-plan")
-	public String planNewPlan( @RequestParam("month") int month, Plan plan, Model model) {
+	public String planNewPlan( @RequestParam("month") int month, PlanRequest plan, Model model) {
 		return calendarService.getDailyForecast(month, plan, model);
 	}
 	
 	@PostMapping("/new-plan")
-	public String saveNewPlan(@ModelAttribute Plan plan) {
+	public String saveNewPlan(@ModelAttribute PlanRequest plan) {
 		return planService.saveNewPlan(plan);
 	}
 

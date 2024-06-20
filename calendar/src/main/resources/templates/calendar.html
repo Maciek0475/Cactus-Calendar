@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>mac2work</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+	crossorigin="anonymous">
+<link rel="icon" th:href="@{/images/cactus.png}">
+</head>
+<body
+	th:style="'background: url(/images/sunrise.png) no-repeat center center fixed; background-size: cover;'">
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light ">
+	<div class="container-fluid">
+	<div>
+		<a class="navbar-brand ml-20" href="/content"> <img
+			th:src="@{/images/cactus.png}" class="d-inline-block align-top"
+			alt="cactus"> Main Page
+		</a> <a class="navbar-brand" href="/calendar">Calendar</a> <a
+			class="navbar-brand" href="/plans">Plans</a> <a class="navbar-brand"
+			href="/done">Done</a> 
+			</div>
+			<span>
+			<a class="navbar-brand" href="logout">Logout</a>
+			<a class="navbar-brand " href="my-account">My Account</a>
+			</span>
+</div>
+	</nav>
+	<div class="container">
+	<div th:if="${isCityChosen}">
+		<h1>Welcome in Calendar</h1>
+		<table class="table">
+			<tr>
+				<th>Monday</th>
+				<th>Tuesday</th>
+				<th>Wednesday</th>
+				<th>Thursday</th>
+				<th>Friday</th>
+				<th>Saturday</th>
+				<th>Sunday</th>
+			</tr>
+			<tr th:each="dailyForecastTr, statTr : ${dailyForecasts}"
+				th:if="${statTr.index %7 == 0}">
+				<td th:each="dailyForecast, stat : ${dailyForecasts}"
+					th:if="${stat.index >= statTr.index && stat.index < statTr.index+7}"
+					th:class="${dailyForecast!=null ? 'bg-success bg-opacity-75 rounded text-dark' : ''}">
+					<div th:if="${dailyForecast!=null}">
+						<span class=" float-end fw-bold "
+							th:text="${dailyForecast.getDate.getDayOfMonth}" /> <br> <label
+							class="label text-dark fw-bold">Propability of success:</label>
+						<progress class="progress-bar bg-success w-100"
+							th:value="${dailyForecast.getSuccess}"
+							th:text="${dailyForecast.getSuccess}" max="100" />
+
+						<div>
+							<a
+								th:href="@{/calendar/new-plan(month=${dailyForecast.getDate.getDayOfMonth})}"
+								class="btn btn-success">Plan to Plant!</a>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+</div>
+<div th:unless="${isCityChosen}" class="bg-success bg-opacity-75 rounded text-dark m-5 p-5">
+<h3>You must choose your city first</h3>
+</div>
+
+	</div>
+</body>
+</html>

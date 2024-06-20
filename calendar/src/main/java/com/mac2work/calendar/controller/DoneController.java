@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mac2work.myfirstproject.webapp.service.PlanService;
+import com.mac2work.calendar.service.PlanService;
 
 import lombok.RequiredArgsConstructor;
 
