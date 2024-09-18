@@ -1,0 +1,39 @@
+spring:
+ cloud:
+   gateway:
+     routes:
+       - id: cactus-user-panel
+         uri: lb://CACTUS-USER-PANEL
+         predicates:
+           - Path=/api/panel/**
+         filters:
+           - JwtAuthenticationFilter
+           
+       - id: calendar
+         uri: lb://CALENDAR
+         predicates:
+           - Path=/calendar/**
+         filters:
+           - JwtAuthenticationFilter
+           
+       - id: forecast
+         uri: lb://FORECAST
+         predicates:
+           - Path=/forecast/**
+         filters:
+           - JwtAuthenticationFilter
+           
+       - id: plans
+         uri: lb://PLANS
+         predicates:
+           - Path=/plans/**
+         filters:
+           - JwtAuthenticationFilter
+              
+ application:
+    name: CACTUS-API-GATEWAY
+    
+eureka:
+  client:
+    service-url:
+      defaultZone : http://localhost:8761/eureka/
