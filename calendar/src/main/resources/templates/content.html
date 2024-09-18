@@ -18,16 +18,16 @@
 	<nav class="navbar navbar-expand-lg navbar-light bg-light ">
 	<div class="container-fluid">
 	<div>
-		<a class="navbar-brand ml-20" href="/content"> <img
+		<a class="navbar-brand ml-20" href="/calendar/content"> <img
 			th:src="@{/images/cactus.png}" class="d-inline-block align-top"
 			alt="cactus"> Main Page
 		</a> <a class="navbar-brand" href="/calendar">Calendar</a> <a
-			class="navbar-brand" href="/plans">Plans</a> <a class="navbar-brand"
+			class="navbar-brand" href="/calendar/plans">Plans</a> <a class="navbar-brand"
 			href="/done">Done</a> 
 			</div>
 			<span>
-			<a class="navbar-brand" href="logout">Logout</a>
-			<a class="navbar-brand " href="my-account">My Account</a>
+			<a class="navbar-brand" href="/calendar/logout">Logout</a>
+			<a class="navbar-brand " href="/calendar/my-account">My Account</a>
 			</span>
 </div>
 	</nav>
@@ -39,7 +39,7 @@
 		<h3><span th:text="${undonePlansCount}"></span> plans wait for you, dont forget about them</h3>
 		<p>
 			If you want to find and set your city, or change to another go to 
-			<a class="btn btn-primary" href="/my-account">My Account</a>
+			<a class="btn btn-primary" href="/calendar/my-account">My Account</a>
 		</p>
 		<p>Remember, to plant cactus you need temp near 20-22 degrees
 			Celsius, and humidity near 40-60% as well</p>

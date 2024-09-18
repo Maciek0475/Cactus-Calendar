@@ -30,7 +30,10 @@ public class MyAccountService {
 	}
 
 	public UserResponse setCity(Long id) {
-		User user = userRepository.UpdateCityIdById(id, getLoggedUser().getId());
+		User user = getLoggedUser();
+		City city = cityRepository.findById(id).orElseThrow();
+		user.setCity(city);
+		user = userRepository.save(user);
 		return mapToUserResponse(user);
 	}
 

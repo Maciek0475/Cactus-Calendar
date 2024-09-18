@@ -15,6 +15,6 @@ public interface ForecastServiceProxy {
 	DailyForecast getDailyForecast(@PathVariable Integer month, @PathVariable Double lat, @PathVariable Double lon);
 	
 	@GetMapping("/api/forecast/{lat}/{lon}")
-	LinkedList<DailyForecast> getForecast(Double lat, Double lon);
+	LinkedList<DailyForecast> getForecast(@PathVariable Double lat, @PathVariable Double lon);
 
 }

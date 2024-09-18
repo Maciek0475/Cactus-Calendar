@@ -5,8 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.mac2work.calendar.request.UserRequest;
+import com.mac2work.cactus_library.request.UserRequest;
 import com.mac2work.calendar.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/calendar/auth")
 public class AuthenticationController {
 	
 	private final AuthenticationService authenticationService;
@@ -26,7 +28,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/register")
-	public String registerNewUser(@Valid  UserRequest userRequest, BindingResult result, Model model, HttpServletResponse response) {
+	public String registerNewUser(UserRequest userRequest, BindingResult result, Model model, HttpServletResponse response) {
 		return authenticationService.register(userRequest, result, model, response);
 	}
 

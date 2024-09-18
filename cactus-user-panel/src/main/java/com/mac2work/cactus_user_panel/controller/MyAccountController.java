@@ -15,7 +15,7 @@ import com.mac2work.cactus_user_panel.service.MyAccountService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/api/my-account")
+@RequestMapping("/api/panel/my-account")
 @RequiredArgsConstructor
 public class MyAccountController {
 	private final MyAccountService myAccountService;

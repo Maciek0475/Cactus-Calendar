@@ -10,7 +10,7 @@ import com.mac2work.calendar.service.ContentService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/content")
+@RequestMapping("/calendar/content")
 @RequiredArgsConstructor
 public class ContentController {
 	private final ContentService contentService;

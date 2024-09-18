@@ -7,32 +7,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.mac2work.cactus_library.request.UserRequest;
 import com.mac2work.calendar.response.CityResponse;
 import com.mac2work.calendar.response.UserResponse;
 
-@FeignClient(name="USER-PANEL")
+@FeignClient(name="CACTUS-USER-PANEL")
 public interface UserPanelProxy {
 
 	@GetMapping("/api/panel/my-account/cities")
-	List<CityResponse> getCities();
+	public List<CityResponse> getCities();
 
-	@PatchMapping("/api/panel/my-account/set-city/{id}")
-	void setAccountCity(@PathVariable Long cityId);
+	@PatchMapping("/api/panel/my-account/set-city")
+	public void setAccountCity(@RequestBody Long cityId);
 
 	@GetMapping("/api/panel/my-account")
-	UserResponse getAccountInfo();
+	public UserResponse getAccountInfo();
 
 	@PostMapping("/api/panel/auth/register")
-	void registerNewUser(String username, String password);
+	public boolean registerNewUser(@RequestBody UserRequest password);
 
-	@GetMapping("/api/panel/user/find")
-	Boolean findByUsername(String username);
+	@GetMapping("/api/panel/auth/find/{username}")
+	public Boolean findByUsername(@PathVariable String username);
 
-	@GetMapping("/api/panle/auth/login-token")
-	String getLoginToken();
+//	@GetMapping("/api/panle/auth/login-token")
+//	String getLoginToken();
 
 	@PostMapping("/api/panel/auth/login")
-	Boolean login(String username, String password);
+	public String login(@RequestBody UserRequest userRequest);
 
 }

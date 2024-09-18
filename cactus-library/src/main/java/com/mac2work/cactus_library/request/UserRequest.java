@@ -1,4 +1,4 @@
-package com.mac2work.calendar.request;
+package com.mac2work.cactus_library.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -21,4 +21,3 @@ public class UserRequest {
 			message="password must be at least 8 characters long, contain 1 capital letter and 1 digit")
 	private String password;
 }
-

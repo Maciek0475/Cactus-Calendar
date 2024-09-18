@@ -11,7 +11,7 @@ import com.mac2work.calendar.service.PlanService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/done")
+@RequestMapping("/calendar/done")
 @RequiredArgsConstructor
 public class DoneController {
 	private final PlanService planService;

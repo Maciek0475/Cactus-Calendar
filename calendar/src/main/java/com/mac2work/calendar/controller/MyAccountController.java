@@ -12,7 +12,7 @@ import com.mac2work.calendar.service.MyAccountService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/my-account")
+@RequestMapping("/calendar/my-account")
 @RequiredArgsConstructor
 public class MyAccountController {
 	private final MyAccountService myAccountService;

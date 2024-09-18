@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mac2work.calendar.request.PlanRequest;
+import com.mac2work.cactus_library.request.PlanRequest;
 import com.mac2work.calendar.service.CalendarService;
 import com.mac2work.calendar.service.PlanService;
 
