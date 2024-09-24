@@ -10,13 +10,10 @@ import org.springframework.stereotype.Component;
 public class RouteValidator {
 	
 	public static final List<String> unsecApiEndpoints = List.of(
-			"/calendar/auth/register",
+			"/calendar",
 			"/error",
-			"/calendar/auth/login",
-			"/user/auth/register",
-			"/calendar/content/guest",
 			"/eureka",
-			"/api/panel/auth/register/mac2work/Maciek123!"
+			"/api/panel/auth"
 			);
 	
 	 public Predicate<ServerHttpRequest> isSecured =

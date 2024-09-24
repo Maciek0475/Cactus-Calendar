@@ -38,7 +38,7 @@
 				Your City is: <b><span th:text="${user.getCityResponse.getName}"></span></b>
 			</p>
 			<form class="form" method="post"
-				th:action="@{/my-account/choose-city}" th:object="${cityId}">
+				th:action="@{/calendar/my-account/choose-city}" th:object="${cityId}">
 				<label for="id"
 					th:text="${user.getCityResponse!=null} ? 'Change your city' : 'Choose your city' "></label>
 				<select name="id" class="form-select w-25" th:field="*{id}">

@@ -1,4 +1,4 @@
-package com.mac2work.cactus_user_panel.service;
+package com.mac2work.calendar.service;
 
 import java.security.Key;
 import java.util.Date;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -27,6 +29,10 @@ public class JwtService {
 	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);
+	}
+	public String generateToken() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return generateToken(authentication.getName());
 	}
 	public String generateToken(String username) {
 		return generateToken(new HashMap<>(), username);

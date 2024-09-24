@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.mac2work.calendar.model.DailyForecast;
 
-@FeignClient(name="FORECAST-SERVICE")
+@FeignClient(name="FORECAST", configuration = {FeignConfig.class})
 public interface ForecastServiceProxy {
 	
 	@GetMapping("/api/forecast/{month}/{lat}/{lon}")

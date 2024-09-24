@@ -1,8 +1,6 @@
-package com.mac2work.calendar.response;
+package com.mac2work.cactus_library.response;
 
 import java.util.List;
-
-import com.mac2work.calendar.model.Role;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +10,6 @@ import lombok.Data;
 public class UserResponse {
 	private String username;
 	private String password;
-	private Role role;
 	private List<PlanResponse> planResponses;
 	private CityResponse cityResponse;
 }

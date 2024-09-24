@@ -1,4 +1,4 @@
-package com.mac2work.calendar.response;
+package com.mac2work.cactus_library.response;
 
 import java.time.LocalDate;
 
@@ -11,7 +11,7 @@ public class PlanResponse {
 	private LocalDate date;
 	private String note;
 	private Double successPropability;
-	private CityResponse cityResponse;
+	private Long cityId;
 	private boolean isDone;
-	private UserResponse userResponse;
+	private Long userId;
 }

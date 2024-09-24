@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.mac2work.cactus_library.request.PlanRequest;
+import com.mac2work.cactus_library.response.PlanResponse;
 import com.mac2work.calendar.proxy.PlansServiceProxy;
-import com.mac2work.calendar.response.PlanResponse;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.mac2work.cactus_user_panel.model;
+package com.mac2work.cactus_library.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

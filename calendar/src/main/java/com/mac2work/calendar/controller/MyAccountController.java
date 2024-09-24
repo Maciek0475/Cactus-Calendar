@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.mac2work.calendar.request.CityId;
 import com.mac2work.calendar.service.MyAccountService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,12 @@ public class MyAccountController {
 	private final MyAccountService myAccountService;
 
 	@GetMapping
-	public String getAccountInfo(Model model, Long cityId) {
+	public String getAccountInfo(Model model, CityId cityId) {
 		return myAccountService.getAccountInfo(model, cityId);
 	}
 	
 	@PostMapping("/choose-city")
-	public String setAccountCity(@ModelAttribute Long cityId) {
+	public String setAccountCity(@ModelAttribute CityId cityId) {
 		return myAccountService.setCity(cityId);
 	}
 }

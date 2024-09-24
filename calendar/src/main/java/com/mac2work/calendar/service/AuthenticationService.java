@@ -1,11 +1,14 @@
 package com.mac2work.calendar.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import com.mac2work.cactus_library.model.Role;
 import com.mac2work.cactus_library.request.UserRequest;
-import com.mac2work.calendar.proxy.UserPanelProxy;
+import com.mac2work.calendar.config.UserRepository;
+import com.mac2work.calendar.model.User;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +17,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationService {
 	
-	private final UserPanelProxy userPanelProxy;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 	
 	private Model hasErrors(boolean hasErrors, Model model) {
 		if(hasErrors)
@@ -24,29 +28,18 @@ public class AuthenticationService {
 
 	public String register(UserRequest userRequest, BindingResult result, Model model, HttpServletResponse response) {
 		model = hasErrors(result.hasErrors(), model);
-		if(userPanelProxy.findByUsername(userRequest.getUsername()))
+		if(userRepository.findByUsername(userRequest.getUsername()) != null)
 			model.addAttribute("error", "This username is already taken");
 		else {
-			userPanelProxy.registerNewUser(userRequest);
+			User user = User.builder()
+					.username(userRequest.getUsername())
+					.password(passwordEncoder.encode(userRequest.getPassword()))
+					.role(Role.USER)
+					.build();
+		userRepository.save(user);
 			return "login.html";
 		}
 		return "register.html";
 	}
-	
-	public String login(UserRequest userRequest, BindingResult result, Model model, HttpServletResponse response) {
-		if(result.hasErrors()) {
-		model = hasErrors(result.hasErrors(), model);
-		}
-		String token = userPanelProxy.login(userRequest);
-		if(token != null) {
-		    response.addHeader("Authorization", "Bearer:" + token);
-		    return "/content";
-		}
-		model.addAttribute("error", "Invalid data!");
-		return "/login";
-			
-	}
-
-
 
 }

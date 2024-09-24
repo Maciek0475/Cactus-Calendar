@@ -20,9 +20,4 @@ public class PlanRequest {
 	private String note;
 	@NotNull(message="success propability must not be null")
 	private Double successPropability;
-	@NotNull(message="city id must not be null")
-	private Long cityId;
-	@NotNull(message="user id must not be null")
-	private Long userId;
-
 }

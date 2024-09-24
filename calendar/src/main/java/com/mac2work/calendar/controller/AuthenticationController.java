@@ -37,10 +37,10 @@ public class AuthenticationController {
 		return "login.html";
 	}
 	
-	@PostMapping("/login")
-	public String login(UserRequest userRequest, BindingResult result, Model model, HttpServletResponse response) {
-		return authenticationService.login(userRequest, result, model, response);
-	}
+//	@PostMapping("/login")
+//	public String login(UserRequest userRequest) {
+//		return authenticationService.login(userRequest);
+//	}
 
 	@GetMapping("/logout")
 	public String getLogoutPage() {
