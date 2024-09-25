@@ -1,4 +1,4 @@
-package com.mac2work.calendar.model;
+package com.mac2work.cactus_library.model;
 
 import java.time.LocalDate;
 
@@ -12,12 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DailyForecast {
-
 	private double temp;
 	private double humidity;
 	private LocalDate date;
 	private double success;
-
-	
-
 }

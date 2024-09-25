@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mac2work.forecast.model.DailyForecast;
+import com.mac2work.cactus_library.model.DailyForecast;
 
 import lombok.RequiredArgsConstructor;
 

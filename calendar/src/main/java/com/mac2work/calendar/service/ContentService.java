@@ -15,11 +15,12 @@ public class ContentService {
 	
 	public String getPlansCount(Model model, boolean isDone) {
 		System.out.println();
-		UserResponse userResponse;// = userPanelProxy.getAccountInfo();
-		userResponse = UserResponse.builder().username("Mac").cityResponse(null).planResponses(null).build();
+		UserResponse userResponse = userPanelProxy.getAccountInfo();
 		Long planCount = 0L;
 		if(userResponse.getPlanResponses() != null)
-		planCount = userResponse.getPlanResponses().stream().filter(plan -> plan.isDone() == true).count();
+		planCount = userResponse.getPlanResponses().stream().filter(plan -> plan.isDone() == false).count();
+		String username = userResponse.getUsername();
+		userResponse.setUsername(username.substring(0, username.indexOf('@')));
 		model.addAttribute("user", userResponse);
 		model.addAttribute("undonePlansCount", planCount);
 		return "content.html";

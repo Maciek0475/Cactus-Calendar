@@ -24,6 +24,6 @@ public class PlansController {
 	@GetMapping("/remove")
 	public String deletePlan(@RequestParam Long id) {
 		planService.deletePlanById(id);
-		return "redirect:/plans";
+		return "redirect:/calendar/plans";
 	}
 }

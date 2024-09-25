@@ -40,4 +40,8 @@ public class MyAccountController {
 	public Long getCityId(@PathVariable Long userId) {
 		return myAccountService.getCityId(userId);
 	}
+	@GetMapping("/get-city/{cityId}")
+	public CityResponse getCityById(@PathVariable Long cityId) {
+		return myAccountService.getCityById(cityId);
+	}
 }

@@ -8,10 +8,11 @@ import lombok.Data;
 @Data
 @Builder
 public class PlanResponse {
+	private Long id;
 	private LocalDate date;
 	private String note;
 	private Double successPropability;
-	private Long cityId;
+	private CityResponse cityResponse;
 	private boolean isDone;
 	private Long userId;
 }

@@ -29,7 +29,7 @@ public class SecurityConfig {
 		 http
         		.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
         		.authorizeHttpRequests(auth ->auth
-        				.requestMatchers("/calendar/auth/register","/content/guest**", "/calendar/auth/login**", "/images/**", "/error**").permitAll()
+        				.requestMatchers("/calendar/auth/register","/calendar/content/guest**", "/calendar/auth/login**", "/images/**", "/error**").permitAll()
         				.anyRequest().authenticated())
         		.formLogin( formLogin ->
         			formLogin.loginPage("/calendar/auth/login")
@@ -51,8 +51,8 @@ public class SecurityConfig {
         			.defaultSuccessUrl("/calendar/content")
         			.failureUrl("/calendar/auth/login?error=true"))
         		.logout( logout ->
-        			logout.logoutUrl("calendar/auth/logout")
-        			.logoutSuccessUrl("/content/guest")); 
+        			logout.logoutUrl("/calendar/auth/logout")
+        			.logoutSuccessUrl("/calendar/content/guest")); 
 		return http.build();
 	}
 	

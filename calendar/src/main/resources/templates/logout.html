@@ -18,21 +18,21 @@
 	<nav class="navbar navbar-expand-lg navbar-light bg-light ">
 		<div class="container-fluid">
 			<div>
-				<a class="navbar-brand ml-20" href="/content"> <img
+				<a class="navbar-brand ml-20" href="/calendar/content"> <img
 					th:src="@{/images/cactus.png}" class="d-inline-block align-top"
 					alt="cactus"> Main Page
 				</a> <a class="navbar-brand" href="/calendar">Calendar</a> <a
-					class="navbar-brand" href="/plans">Plans</a> <a
-					class="navbar-brand" href="/done">Done</a>
+					class="navbar-brand" href="/calendar/plans">Plans</a> <a
+					class="navbar-brand" href="/calendar/done">Done</a>
 			</div>
-			<span> <a class="navbar-brand" th:href="@{/logout}">Logout</a> <a
-				class="navbar-brand " href="my-account">My Account</a>
+			<span> <a class="navbar-brand" th:href="@{/calendar/auth/logout}">Logout</a> <a
+				class="navbar-brand " href="/calendar/my-account">My Account</a>
 			</span>
 		</div>
 	</nav>
 	<div class="container">
 			<h1>Sign out</h1>
-	<form class="mt-5 bg-success bg-opacity-75 rounded p-3" name="logoutForm" th:action="@{/logout}" method="post">
+	<form class="mt-5 bg-success bg-opacity-75 rounded p-3" name="logoutForm" th:action="@{/calendar/auth/logout}" method="post">
 	<h5>Are you sure you want to Sign out?</h5><br>
       <input class="btn btn-success w-25" type="submit" value="Sign Out"/>
    </form> 

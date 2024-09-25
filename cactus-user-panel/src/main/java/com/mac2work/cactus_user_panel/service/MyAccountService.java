@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.mac2work.cactus_library.response.CityResponse;
+import com.mac2work.cactus_library.response.PlanResponse;
 import com.mac2work.cactus_library.response.UserResponse;
 import com.mac2work.cactus_user_panel.model.City;
 import com.mac2work.cactus_user_panel.model.User;
+import com.mac2work.cactus_user_panel.proxy.PlansServiceProxy;
 import com.mac2work.cactus_user_panel.repository.CityRepository;
 import com.mac2work.cactus_user_panel.repository.UserRepository;
 
@@ -19,6 +21,7 @@ public class MyAccountService {
 
 	private final CityRepository cityRepository;
 	private final UserRepository userRepository;
+	private final PlansServiceProxy plansServiceProxy;
 
 	public List<CityResponse> getCities() {
 		List<CityResponse> cities = cityRepository.findAll()
@@ -47,9 +50,11 @@ public class MyAccountService {
 	}
 
 	private UserResponse mapToUserResponse(User user) {
+		List<PlanResponse> planResponses = plansServiceProxy.getPlansByDoneStatus(false);
 		return UserResponse.builder()
 				.username(user.getUsername())
 				.cityResponse(user.getCity() != null? mapToCityResponse(user.getCity()) : null)
+				.planResponses(planResponses)
 				.build();
 	}
 
@@ -65,5 +70,10 @@ public class MyAccountService {
 	public Long getCityId(Long userId) {
 		City city = userRepository.findById(userId).orElseThrow().getCity();
 		return city.getId();
+	}
+	
+	public CityResponse getCityById(Long cityId) {
+		City city = cityRepository.findById(cityId).orElseThrow();
+		return mapToCityResponse(city);
 	}
 }

@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import com.mac2work.cactus_library.model.DailyForecast;
 import com.mac2work.cactus_library.request.PlanRequest;
 import com.mac2work.cactus_library.response.CityResponse;
 import com.mac2work.cactus_library.response.UserResponse;
-import com.mac2work.calendar.model.DailyForecast;
 import com.mac2work.calendar.proxy.ForecastServiceProxy;
 import com.mac2work.calendar.proxy.UserPanelProxy;
 

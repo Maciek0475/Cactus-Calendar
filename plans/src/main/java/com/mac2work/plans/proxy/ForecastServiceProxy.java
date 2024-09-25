@@ -1,4 +1,4 @@
-package com.mac2work.calendar.proxy;
+package com.mac2work.plans.proxy;
 
 import java.util.LinkedList;
 
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.mac2work.cactus_library.model.DailyForecast;
 
-@FeignClient(name="FORECAST", configuration = {FeignConfig.class})
+@FeignClient(name="FORECAST")
 public interface ForecastServiceProxy {
 	
 	@GetMapping("/api/forecast/{month}/{lat}/{lon}")

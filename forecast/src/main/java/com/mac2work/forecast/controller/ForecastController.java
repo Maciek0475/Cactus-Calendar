@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mac2work.forecast.model.DailyForecast;
+import com.mac2work.cactus_library.model.DailyForecast;
 import com.mac2work.forecast.service.ForecastService;
 
 import lombok.RequiredArgsConstructor;

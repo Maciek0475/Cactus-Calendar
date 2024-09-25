@@ -7,9 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.mac2work.cactus_library.request.PlanRequest;
+import com.mac2work.cactus_library.response.CityResponse;
 import com.mac2work.cactus_library.response.PlanResponse;
 import com.mac2work.plans.model.Plan;
-import com.mac2work.plans.proxy.CalendarServiceProxy;
+import com.mac2work.plans.proxy.ForecastServiceProxy;
 import com.mac2work.plans.proxy.UserPanelProxy;
 import com.mac2work.plans.repository.PlanRepository;
 import com.mac2work.plans.response.PlansResponse;
@@ -20,17 +21,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PlansService {
 	private final UserPanelProxy userPanelProxy;
-	private final CalendarServiceProxy calendarServiceProxy;
+	private final ForecastServiceProxy forecastServiceProxy;
 	private final PlanRepository planRepository;
 	
 	public List<PlanResponse> getPlansByDoneStatus(String userId, Boolean status) {
 		List<Plan> plans = findAllByUserId(userId);
 		List<PlanResponse> planResponses = plans.stream().filter(p -> p.isDone() == status).map(plan -> 
 			PlanResponse.builder()
+			.id(plan.getId())
 			.date(plan.getDate())
 			.note(plan.getNote())
 			.successPropability(plan.getSuccessPropability())
-			.cityId(plan.getCityId())
+			.cityResponse(userPanelProxy.getCityById(plan.getCityId()))
 			.isDone(plan.isDone())
 			.userId(plan.getUserId())
 			.build()).toList();
@@ -55,12 +57,15 @@ public class PlansService {
 
 	public List<Plan> updatePlans(List<Plan> plans) {
 		plans.stream().forEach(plan -> {
-			if (plan.getDate().isBefore(LocalDate.now()))
-				plan = planRepository.updateIsDoneById(plan.getId(), true);
+			if (plan.getDate().isBefore(LocalDate.now())) 
+				planRepository.updateIsDoneById(plan.getId(), true);
+			
 			else {
-				plan = planRepository.updateSuccessPropabilityById(plan.getId(),
-						calendarServiceProxy.getDailyForecastSuccess(plan.getDate().getDayOfMonth()));
+				CityResponse cityResponse = userPanelProxy.getCityById(plan.getCityId());
+				planRepository.updateSuccessPropabilityById(plan.getId(),
+					forecastServiceProxy.getDailyForecast(plan.getDate().getDayOfMonth(), cityResponse.getLat(), cityResponse.getLon()).getSuccess());
 			}
+			plan = planRepository.findById(plan.getId()).orElseThrow();
 		});
 		return plans;
 	}
@@ -77,11 +82,14 @@ public class PlansService {
 				.build();
 		plan = planRepository.save(plan);
 		
+		CityResponse cityResponse = userPanelProxy.getCityById(plan.getCityId());
+
 		return PlanResponse.builder()
+				.id(plan.getId())
 				.date(plan.getDate())
 				.note(plan.getNote())
 				.successPropability(plan.getSuccessPropability())
-				.cityId(plan.getCityId())
+				.cityResponse(cityResponse)
 				.isDone(plan.isDone())
 				.userId(plan.getUserId())
 				.build();
