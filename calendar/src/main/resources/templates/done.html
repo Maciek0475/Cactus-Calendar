@@ -44,7 +44,7 @@
 				<td th:text="${plan.getDate}"></td>
 				<td th:text="${plan.getNote}"></td>
 				<td th:text="${plan.getSuccessPropability}"></td>
-				<td th:text="${plan.getCity.getName}"></td>
+				<td th:text="${plan.getCityResponse.getName}"></td>
 				<td><a th:href="@{/calendar/done/remove(id=${plan.getId})}" class="btn btn-danger">Delete</a></td>
 
 			</tr>

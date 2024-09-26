@@ -34,20 +34,6 @@ public class SecurityConfig {
         		.formLogin( formLogin ->
         			formLogin.loginPage("/calendar/auth/login")
         			.loginProcessingUrl("/calendar/auth/login")
-//        			.successHandler(new AuthenticationSuccessHandler() {
-//
-//						@Override
-//						public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-//								Authentication authentication) throws IOException, ServletException {
-//							String username = authentication.getName();
-//							String password = userRepository.findByUsername(username).orElseThrow().getPassword();
-//							authenticationService.login(username, password);
-//							UrlPathHelper urlPathHelper = new UrlPathHelper();
-//							String contextPath = urlPathHelper.getContextPath(request);
-//							
-//							response.sendRedirect("/calendar/content");
-//							
-//						}})
         			.defaultSuccessUrl("/calendar/content")
         			.failureUrl("/calendar/auth/login?error=true"))
         		.logout( logout ->

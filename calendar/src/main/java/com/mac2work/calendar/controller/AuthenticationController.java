@@ -11,7 +11,6 @@ import com.mac2work.cactus_library.request.UserRequest;
 import com.mac2work.calendar.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
