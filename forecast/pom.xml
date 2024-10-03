@@ -52,6 +52,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+   			<groupId>org.junit-pioneer</groupId>
+   	 		<artifactId>junit-pioneer</artifactId>
+    		<version>2.1.0</version>
+    		<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.mac2work</groupId>
 			<artifactId>cactus-library</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

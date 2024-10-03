@@ -20,18 +20,20 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ForecastService {
+	private final RestTemplate restTemplate;
+	
 	@Value("${mac2work.forecast.good.temperature}")
-	private Double GOOD_TEMP;
+	private Double GOOD_TEMP = 21.0;
 	@Value("${mac2work.forecast.good.humidity}")
-	private Double GOOD_HUMIDITY;
+	private Double GOOD_HUMIDITY = 50.0;
 	@Value("${mac2work.forecast.multiplier.temperature}")
-	private Double TEMPERATURE_MULTIPLIER;
+	private Double TEMPERATURE_MULTIPLIER = 4.0;
 	@Value("${mac2work.forecast.multiplier.humidity}")
-	private Double HUMIDITY_MULTIPLIER;
+	private Double HUMIDITY_MULTIPLIER = 3.0;
 	@Value("${mac2work.forecast.url.prefix}")
-	private String API_URL_PREFIX;
+	private String API_URL_PREFIX = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/";
 	@Value("${mac2work.forecast.url.suffix}")
-	private String API_URL_SUFFIX;
+	private String API_URL_SUFFIX = "?unitGroup=metric&elements=datetime,temp,humidity,icon&include=days&key=3XQ3BGCW8Y9TEGLCV9642PV7D&contentType=json";
 
 	@SuppressWarnings("unchecked")
 	public <T1, T2> LinkedList<DailyForecast> getForecast(Double lat, Double lon) {
@@ -40,7 +42,6 @@ public class ForecastService {
 				+","
 				+ lon
 				+ API_URL_SUFFIX;
-		RestTemplate restTemplate = new RestTemplate();
 		String result = restTemplate.getForObject(FORECAST_API_URL, String.class);
 		HashMap<T1, T2> map = null;
 
@@ -59,8 +60,9 @@ public class ForecastService {
 				.date(LocalDate.parse((CharSequence) day.get("datetime")))
 				.build())
 				.collect(Collectors.toCollection(LinkedList::new));
+		int dayOfWeek = dailyForecasts.getFirst().getDate().getDayOfWeek().getValue();
 		
-		for (int i = 1; i < LocalDate.now().getDayOfWeek().getValue(); i++)
+		for (int i = 1; i < dayOfWeek; i++)
 			dailyForecasts.addFirst(null);
 		
 		return dailyForecasts.stream().
