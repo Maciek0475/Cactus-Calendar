@@ -11,7 +11,6 @@ import com.mac2work.cactus_user_panel.model.User;
 import com.mac2work.cactus_user_panel.repository.CityRepository;
 import com.mac2work.cactus_user_panel.repository.UserRepository;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Service
