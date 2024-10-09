@@ -64,7 +64,7 @@ class PlansServiceTest {
 				.note("Great day for planting")
 				.successPropability(80.0)
 				.cityResponse(cityResponse)
-				.isDone(false)
+				.isDone(true)
 				.userId(1L)
 				.build();
 		
@@ -80,7 +80,7 @@ class PlansServiceTest {
 				.note("Great day for planting")
 				.successPropability(80.0)
 				.cityId(1L)
-				.isDone(false)
+				.isDone(true)
 				.userId(1L)
 				.build();
 		plan2 = Plan.builder()
