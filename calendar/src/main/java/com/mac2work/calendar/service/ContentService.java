@@ -14,7 +14,6 @@ public class ContentService {
 	private final UserPanelProxy userPanelProxy;
 	
 	public String getPlansCount(Model model, boolean isDone) {
-		System.out.println();
 		UserResponse userResponse = userPanelProxy.getAccountInfo();
 		Long planCount = 0L;
 		if(userResponse.getPlanResponses() != null)

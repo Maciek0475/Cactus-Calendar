@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.mac2work.cactus_library.request.UserRequest;
 import com.mac2work.calendar.service.AuthenticationService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -27,19 +26,14 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/register")
-	public String registerNewUser(UserRequest userRequest, BindingResult result, Model model, HttpServletResponse response) {
-		return authenticationService.register(userRequest, result, model, response);
+	public String registerNewUser(UserRequest userRequest, BindingResult result, Model model) {
+		return authenticationService.register(userRequest, result, model);
 	}
 
 	@GetMapping("/login")
 	public String getLoginPage() {
 		return "login.html";
 	}
-	
-//	@PostMapping("/login")
-//	public String login(UserRequest userRequest) {
-//		return authenticationService.login(userRequest);
-//	}
 
 	@GetMapping("/logout")
 	public String getLogoutPage() {

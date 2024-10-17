@@ -10,7 +10,6 @@ import com.mac2work.cactus_library.request.UserRequest;
 import com.mac2work.calendar.config.UserRepository;
 import com.mac2work.calendar.model.User;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,9 +25,9 @@ public class AuthenticationService {
 		return model;
 	}
 
-	public String register(UserRequest userRequest, BindingResult result, Model model, HttpServletResponse response) {
+	public String register(UserRequest userRequest, BindingResult result, Model model) {
 		model = hasErrors(result.hasErrors(), model);
-		if(userRepository.findByUsername(userRequest.getUsername()) != null)
+		if(userRepository.findByUsername(userRequest.getUsername()).isPresent())
 			model.addAttribute("error", "This username is already taken");
 		else {
 			User user = User.builder()
