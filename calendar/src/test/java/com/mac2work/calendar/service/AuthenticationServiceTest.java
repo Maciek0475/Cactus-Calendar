@@ -3,6 +3,8 @@ package com.mac2work.calendar.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +46,7 @@ class AuthenticationServiceTest {
 	@Test
 	void authenticationService_register_ReturnCorrectHtmlFileName() {
 		Model model = new ExtendedModelMap();
-		when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(null);
+		when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(Optional.empty());
 		when(passwordEncoder.encode(userRequest.getPassword())).thenReturn(userRequest.getPassword());
 		when(userRepository.save(Mockito.any())).thenReturn(null);
 		

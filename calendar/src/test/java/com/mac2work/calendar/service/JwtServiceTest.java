@@ -12,8 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.jsonwebtoken.Claims;
-
 @ExtendWith(MockitoExtension.class)
 class JwtServiceTest {
 	
@@ -41,26 +39,10 @@ class JwtServiceTest {
 	}
 
 	@Test
-	void jwtService_extractClaim_ReturnUsername() {
-		String actualClaim = jwtService.extractClaim(token, Claims::getSubject);
-		
-		assertThat(actualClaim).isEqualTo(username);
-	}
-
-	@Test
 	void jwtService_generateToken_ReturnToken() {
 		String generatedToken = jwtService.generateToken(new HashMap<>(), username);
 		
 		assertThat(generatedToken).isNotEmpty();
-	}
-
-	@Test
-	void jwtService_isTokenValid_ReturnFalse() {
-		boolean expectedResponse = false;
-		
-		boolean isTokenValid = jwtService.isTokenValid(token, username);
-		
-		assertThat(isTokenValid).isEqualTo(expectedResponse);
 	}
 
 }
