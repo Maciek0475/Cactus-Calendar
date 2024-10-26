@@ -1,10 +1,12 @@
 package com.mac2work.calendar.controller;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDate;
 
@@ -21,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.mac2work.cactus_library.exception.ResourceNotFoundException;
 import com.mac2work.cactus_library.response.CityResponse;
 import com.mac2work.cactus_library.response.PlanResponse;
 import com.mac2work.calendar.service.PlanService;
@@ -38,8 +41,15 @@ class PlansControllerTest {
 
 	private PlanResponse planResponse;
 	private CityResponse cityResponse;
+	private ResourceNotFoundException exception;
+	private String invalidId;
+
+
 	@BeforeEach
 	void setUp() throws Exception {
+		invalidId = "2";
+		exception = new ResourceNotFoundException("Plan", "id", invalidId);
+		
 		cityResponse = CityResponse.builder()
 				.name("Gorzów Wielkopolski")
 				.id(1L)
@@ -67,17 +77,39 @@ class PlansControllerTest {
 		result.andExpect(view().name("plans.html"))
 			.andExpect(model().attribute("plans", planResponse));
 	}	
+	@Test
+	void plansController_showPlans_ReturnExceptionView() throws Exception {
+		when(planService.filterByDoneStatus(Mockito.any(), Mockito.anyBoolean())).thenThrow(exception);
+	
+		ResultActions result = mockMvc.perform(get("/calendar/plans").flashAttr("plans", planResponse)
+				.contentType(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(view().name("error"))
+			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
+			.andExpect(model().attribute("exception", exception));
+	}
 			
 
 	@Test
 	void plansController_deletePlan_ReturnRedirect() throws Exception {
 		String id = String.valueOf(planResponse.getId());
 		doNothing().when(planService).deletePlanById(planResponse.getId());
-		
+
 		ResultActions result = mockMvc.perform(get("/calendar/plans/remove").param("id", id)
 				.contentType(MediaType.APPLICATION_JSON));
 		
 		result.andExpect(view().name("redirect:/calendar/plans"));
+	}
+	@Test
+	void plansController_deletePlan_ReturnExceptionView() throws Exception {
+		doThrow(exception).when(planService).deletePlanById(Long.valueOf(invalidId));
+
+		ResultActions result = mockMvc.perform(get("/calendar/plans/remove").param("id", invalidId)
+				.contentType(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(view().name("error"))
+			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
+			.andExpect(model().attribute("exception", exception));
 	}
 
 }
