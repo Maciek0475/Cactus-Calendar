@@ -1,6 +1,8 @@
 package com.mac2work.cactus_user_panel.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.mac2work.cactus_library.exception.ResourceNotFoundException;
 import com.mac2work.cactus_library.model.Role;
 import com.mac2work.cactus_library.response.CityResponse;
 import com.mac2work.cactus_library.response.UserResponse;
@@ -113,6 +116,21 @@ class MyAccountServiceTest {
 		
 		assertThat(actualUserResponse.getCityResponse()).isEqualTo(cityResponse2);
 	}
+	
+	@Test
+	void myAccountService_setCity_ThrowResourceNotFoundException() {
+		Long invalidId = -1L;
+		ResourceNotFoundException exception = new ResourceNotFoundException("city", "id", invalidId);
+		MyAccountService myAccountServiceSpy = Mockito.spy(myAccountService);
+		doReturn(user).when(myAccountServiceSpy).getLoggedUser(user.getUsername());
+		when(cityRepository.findById(invalidId)).thenThrow(exception);
+				
+		Exception actualException = assertThrows(ResourceNotFoundException.class, () -> {
+			myAccountServiceSpy.setCity(user.getUsername(), invalidId);
+		});
+		
+		assertEquals(actualException.getMessage(), exception.getMessage());
+	}
 
 	@Test
 	void myAccountService_getLoggedUser_ReturnUser() {
@@ -121,6 +139,19 @@ class MyAccountServiceTest {
 		User actualUser = myAccountService.getLoggedUser(user.getUsername());
 		
 		assertThat(actualUser).isEqualTo(user);
+	}
+	
+	@Test
+	void myAccountService_getLoggedUser_ThrowResourceNotFoundException() {
+		String invalidUsername = "";
+		ResourceNotFoundException exception = new ResourceNotFoundException("user", "username", invalidUsername);
+		when(userRepository.findByUsername(invalidUsername)).thenThrow(exception);
+				
+		Exception actualException = assertThrows(ResourceNotFoundException.class, () -> {
+			myAccountService.getLoggedUser(invalidUsername);
+		});
+		
+		assertEquals(actualException.getMessage(), exception.getMessage());
 	}
 
 	@Test

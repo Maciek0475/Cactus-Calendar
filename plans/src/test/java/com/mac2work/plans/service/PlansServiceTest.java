@@ -1,6 +1,8 @@
 package com.mac2work.plans.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -19,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
+import com.mac2work.cactus_library.exception.ResourceNotFoundException;
 import com.mac2work.cactus_library.model.DailyForecast;
 import com.mac2work.cactus_library.request.PlanRequest;
 import com.mac2work.cactus_library.response.CityResponse;
@@ -125,6 +128,19 @@ class PlansServiceTest {
 		
 		assertThat(actualPlansReponse).isEqualTo(plansResponse);
 	}
+	
+	@Test
+	void plansService_deletePlan_ThrowResourceNotFoundException() {
+		Long invalidId = -1L;
+		ResourceNotFoundException exception = new ResourceNotFoundException("plan", "id", invalidId);
+		when(planRepository.findById(invalidId)).thenThrow(exception);
+				
+		Exception actualException = assertThrows(ResourceNotFoundException.class, () -> {
+			plansService.deletePlan(invalidId);
+		});
+		
+		assertEquals(actualException.getMessage(), exception.getMessage());
+	}
 
 	@Test
 	void plansService_findAllByUserId_ReturnListOfPlans() {
@@ -156,6 +172,23 @@ class PlansServiceTest {
 		List<Plan> actualPlans = plansService.updatePlans(plans);
 		
 		assertThat(actualPlans).isEqualTo(plans);
+	}
+	
+	@Test
+	void plansService_updatePlans_ThrowResourceNotFoundException() {
+		Long invalidId = -1L;
+		ResourceNotFoundException exception = new ResourceNotFoundException("plan", "id", invalidId);
+		List<Plan> plans = List.of(plan, plan2);
+		doNothing().when(planRepository).updateIsDoneById(plan.getId(), true);
+		plan.setDone(true);
+		plan2.setSuccessPropability(dailyForecast2.getSuccess());
+		when(planRepository.findById(Mockito.anyLong())).thenThrow(exception);
+				
+		Exception actualException = assertThrows(ResourceNotFoundException.class, () -> {
+			plansService.updatePlans(plans);
+		});
+		
+		assertEquals(actualException.getMessage(), exception.getMessage());
 	}
 	
 

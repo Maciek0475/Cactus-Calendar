@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.mac2work.cactus_library.exception.ResourceNotFoundException;
 import com.mac2work.cactus_library.request.PlanRequest;
 import com.mac2work.cactus_library.response.CityResponse;
 import com.mac2work.cactus_library.response.PlanResponse;
@@ -40,7 +41,7 @@ public class PlansService {
 	}
 	
 	public PlansResponse deletePlan(Long id) {
-		planRepository.findById(id).orElseThrow();
+		planRepository.findById(id).orElseThrow( () -> new ResourceNotFoundException("plan", "id", id));
 		planRepository.deleteById(id);
 		return PlansResponse.builder()
 				.isSuccess(true)
@@ -65,7 +66,8 @@ public class PlansService {
 				planRepository.updateSuccessPropabilityById(plan.getId(),
 					forecastServiceProxy.getDailyForecast(plan.getDate().getDayOfMonth(), cityResponse.getLat(), cityResponse.getLon()).getSuccess());
 			}
-			plan = planRepository.findById(plan.getId()).orElseThrow();
+			Long id = plan.getId();
+			plan = planRepository.findById(plan.getId()).orElseThrow( () -> new ResourceNotFoundException("plan", "id", id));
 		});
 		return plans;
 	}
