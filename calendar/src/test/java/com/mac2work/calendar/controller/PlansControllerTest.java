@@ -44,10 +44,9 @@ class PlansControllerTest {
 	private ResourceNotFoundException exception;
 	private String invalidId;
 
-
 	@BeforeEach
 	void setUp() throws Exception {
-		invalidId = "2";
+		invalidId = "-1";
 		exception = new ResourceNotFoundException("Plan", "id", invalidId);
 		
 		cityResponse = CityResponse.builder()
@@ -78,10 +77,10 @@ class PlansControllerTest {
 			.andExpect(model().attribute("plans", planResponse));
 	}	
 	@Test
-	void plansController_showPlans_ReturnExceptionView() throws Exception {
+	void plansController_showPlans_ReturnErrorView() throws Exception {
 		when(planService.filterByDoneStatus(Mockito.any(), Mockito.anyBoolean())).thenThrow(exception);
 	
-		ResultActions result = mockMvc.perform(get("/calendar/plans").flashAttr("plans", planResponse)
+		ResultActions result = mockMvc.perform(get("/calendar/plans")
 				.contentType(MediaType.APPLICATION_JSON));
 		
 		result.andExpect(view().name("error"))
@@ -101,7 +100,7 @@ class PlansControllerTest {
 		result.andExpect(view().name("redirect:/calendar/plans"));
 	}
 	@Test
-	void plansController_deletePlan_ReturnExceptionView() throws Exception {
+	void plansController_deletePlan_ReturnErrorView() throws Exception {
 		doThrow(exception).when(planService).deletePlanById(Long.valueOf(invalidId));
 
 		ResultActions result = mockMvc.perform(get("/calendar/plans/remove").param("id", invalidId)

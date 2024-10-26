@@ -1,5 +1,6 @@
 package com.mac2work.calendar.controller;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.mac2work.cactus_library.exception.ResourceNotFoundException;
 import com.mac2work.cactus_library.response.CityResponse;
 import com.mac2work.cactus_library.response.UserResponse;
 import com.mac2work.calendar.request.CityId;
@@ -42,9 +44,11 @@ class MyAccountControllerTest {
 	private CityResponse cityResponse2;
 	private UserResponse userResponse;
 	private CityId cityId;
+	private Long invalidId;
 	
 	@BeforeEach
 	void setUp() throws Exception {
+		invalidId = -1L;
 		cityResponse = CityResponse.builder()
 				.name("Gorzów Wielkopolski")
 				.id(1L)
@@ -80,6 +84,18 @@ class MyAccountControllerTest {
 			.andExpect(model().attribute("cities", List.of(cityResponse, cityResponse2)))
 			.andExpect(model().attribute("cityId", cityId));
 	}
+	@Test
+	void myAccountController_getAccountInfo_ReturnErrorView() throws Exception {
+		ResourceNotFoundException exception = new ResourceNotFoundException("user", "id", invalidId);
+		when(myAccountService.getAccountInfo(Mockito.any(), Mockito.any())).thenThrow(exception);
+		
+		ResultActions result = mockMvc.perform(get("/calendar/my-account")
+				.contentType(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(view().name("error"))
+			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
+			.andExpect(model().attribute("exception", exception));
+	}
 
 	@Test
 	void myAccountController_setAccountCity_ReturnRedirect() throws Exception {
@@ -89,6 +105,19 @@ class MyAccountControllerTest {
 				.contentType(MediaType.APPLICATION_JSON));
 		
 		result.andExpect(view().name("redirect:/calendar/my-account"));
+	}
+	
+	@Test
+	void myAccountController_setAccountCity_ReturnErrorView() throws Exception {
+		ResourceNotFoundException exception = new ResourceNotFoundException("city", "id", invalidId);
+		when(myAccountService.setCity(Mockito.any())).thenThrow(exception);
+		
+		ResultActions result = mockMvc.perform(post("/calendar/my-account/choose-city")
+				.contentType(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(view().name("error"))
+		.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
+		.andExpect(model().attribute("exception", exception));
 	}
 
 }
