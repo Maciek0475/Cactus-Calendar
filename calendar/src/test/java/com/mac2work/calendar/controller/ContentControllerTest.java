@@ -1,5 +1,6 @@
 package com.mac2work.calendar.controller;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.mac2work.cactus_library.exception.ResourceNotFoundException;
 import com.mac2work.cactus_library.response.PlanResponse;
 import com.mac2work.cactus_library.response.UserResponse;
 import com.mac2work.calendar.service.ContentService;
@@ -39,9 +41,14 @@ class ContentControllerTest {
 
 	private UserResponse userResponse;
 	private PlanResponse planResponse;
+	private ResourceNotFoundException exception;
+	private Long invalidId;
 	
 	@BeforeEach
 	void setUp() throws Exception {
+		invalidId = -1L;
+		exception = new ResourceNotFoundException("user", "id", invalidId);
+		
 		planResponse = PlanResponse.builder()
 				.id(1L)
 				.date(LocalDate.parse("2024-10-05"))
@@ -68,6 +75,17 @@ class ContentControllerTest {
 		result.andExpect(view().name("content.html"))
 			.andExpect(model().attribute("user", userResponse))
 			.andExpect(model().attribute("undonePlansCount",1L));
+		}
+	@Test
+	void contentController_getContentPage_ReturnExceptionView() throws Exception {
+		when(contentService.getPlansCount(Mockito.any(), Mockito.anyBoolean())).thenThrow(exception);
+		
+		ResultActions result = mockMvc.perform(get("/calendar/content")
+				.contentType(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(view().name("error"))
+			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
+			.andExpect(model().attribute("exception", exception));
 		}
 
 	@Test
