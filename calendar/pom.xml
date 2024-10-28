@@ -110,6 +110,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<image>
+						<name>mac2work/cc-${project.artifactId}:${project.version}</name>
+						<env>
+							<BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
+						</env>
+					</image>
+					<pullPolicy>IF_NOT_PRESENT</pullPolicy>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
