@@ -1,0 +1,101 @@
+version: '3.7'
+
+services:
+  calendar-service:
+    image: mac2work/cc-calendar:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8000-8099:8000"
+    networks:
+      - cactus-network
+    depends_on:
+      - discovery-server
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://discovery-server:8761/eureka
+  forecast-service:
+    image: mac2work/cc-forecast:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8100-8199:8100"
+    networks:
+      - cactus-network
+    depends_on:
+      - discovery-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://discovery-server:8761/eureka
+  cactus-user-panel:
+    image: mac2work/cc-cactus-user-panel:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8200-8299:8200"
+    networks:
+      - cactus-network
+    depends_on:
+      - discovery-server
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://discovery-server:8761/eureka
+  plans-service:
+    image: mac2work/cc-plans:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8300-8399:8300"
+    networks:
+      - cactus-network
+    depends_on:
+      - discovery-server
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://discovery-server:8761/eureka
+  cactus-api-gateway:
+    image: mac2work/cc-cactus-api-gateway:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8765:8765"
+    networks:
+      - cactus-network
+    depends_on:
+      - discovery-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://discovery-server:8761/eureka
+  naming-server:
+    image: mac2work/cc-naming-server:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8761:8761"
+    networks:
+      - cactus-network
+  mysqldb:
+    container_name: mysqldb
+    image: mysql
+    restart: on-failure
+    ports:
+      - "3307:3306"
+    networks:
+      - yacht-network
+    depends_on:
+      - discovery-server
+    environment:
+      - MYSQL_DATABASE=cactus-calendar
+      - MYSQL_USER=mac2work
+      - MYSQL_PASSWORD=mac2work
+      - MYSQL_ROOT_PASSWORD=mac2work
+    volumes:
+      - mysql-data:/var/lib/mysql
+networks:
+  cactus-network:
+volumes:
+  mysql-data:
