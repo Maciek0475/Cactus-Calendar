@@ -1,0 +1,115 @@
+version: '3.7'
+
+services:
+  calendar-service:
+    image: mac2work/cc-calendar:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+  forecast-service:
+    image: mac2work/cc-forecast:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8100-8199:8100"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+  cactus-user-panel:
+    image: mac2work/cc-cactus-user-panel:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8200-8299:8200"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+  plans-service:
+    image: mac2work/cc-plans:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8300-8399:8300"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+  cactus-api-gateway:
+    image: mac2work/cc-cactus-api-gateway:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8765:8765"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+  naming-server:
+    image: mac2work/cc-naming-server:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8761:8761"
+    networks:
+      - cactus-network
+  mysqldb:
+    container_name: mysqldb
+    image: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
+    environment:
+      - MYSQL_DATABASE=cactus-calendar
+      - MYSQL_USER=mac2work
+      - MYSQL_PASSWORD=mac2work
+      - MYSQL_ROOT_PASSWORD=mac2work
+    volumes:
+      #- mysql-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+  zipkin-server:
+    image: openzipkin/zipkin
+    ports: 
+      - "9411:9411"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
+networks:
+  cactus-network:
+volumes:
+  mysql-data:

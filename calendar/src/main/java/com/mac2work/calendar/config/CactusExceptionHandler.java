@@ -6,6 +6,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mac2work.cactus_library.exception.ResourceNotFoundException;
 
+
 @ControllerAdvice
 public class CactusExceptionHandler {
 
@@ -13,7 +14,7 @@ public class CactusExceptionHandler {
 	public ModelAndView handleResourceNotFoundException(ResourceNotFoundException exc) {
 		ModelAndView errorPage = new ModelAndView();
 		errorPage.addObject("exception", exc);
-		errorPage.setViewName("error");
+		errorPage.setViewName("custom-error");
 		return errorPage;
 	}
 }

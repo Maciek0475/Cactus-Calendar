@@ -9,22 +9,22 @@ spring:
          filters:
            - JwtAuthenticationFilter
            
-       - id: calendar
-         uri: lb://CALENDAR
+       - id: calendar-service
+         uri: lb://CALENDAR-SERVICE
          predicates:
            - Path=/calendar/**
          filters:
            - JwtAuthenticationFilter
            
-       - id: forecast
-         uri: lb://FORECAST
+       - id: forecast-service
+         uri: lb://FORECAST-SERVICE
          predicates:
            - Path=/forecast/**
          filters:
            - JwtAuthenticationFilter
            
-       - id: plans
-         uri: lb://PLANS
+       - id: plans-service
+         uri: lb://PLANS-SERVICE
          predicates:
            - Path=/plans/**
          filters:

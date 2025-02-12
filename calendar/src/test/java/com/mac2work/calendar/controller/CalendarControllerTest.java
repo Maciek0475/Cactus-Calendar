@@ -104,7 +104,7 @@ class CalendarControllerTest {
 		ResultActions result = mockMvc.perform(get("/calendar")
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 			.andExpect(model().attribute("exception", exception));	
 	}
@@ -132,7 +132,7 @@ class CalendarControllerTest {
 				.param("month", String.valueOf(dailyForecast.getDate().getDayOfMonth()))
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 			.andExpect(model().attribute("exception", exception));	
 	}
@@ -154,7 +154,7 @@ class CalendarControllerTest {
 		ResultActions result = mockMvc.perform(post("/calendar/new-plan")
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 			.andExpect(model().attribute("exception", exception));	
 	}

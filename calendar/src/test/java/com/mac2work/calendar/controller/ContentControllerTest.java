@@ -83,7 +83,7 @@ class ContentControllerTest {
 		ResultActions result = mockMvc.perform(get("/calendar/content")
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 			.andExpect(model().attribute("exception", exception));
 		}
