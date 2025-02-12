@@ -16,6 +16,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
   forecast-service:
     image: mac2work/cc-forecast:0.0.1-SNAPSHOT
     mem_limit: 700m
@@ -28,6 +29,7 @@ services:
       - naming-server
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
   cactus-user-panel:
     image: mac2work/cc-cactus-user-panel:0.0.1-SNAPSHOT
     mem_limit: 700m
@@ -43,6 +45,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
   plans-service:
     image: mac2work/cc-plans:0.0.1-SNAPSHOT
     mem_limit: 700m
@@ -58,6 +61,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/cactus-calendar
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
   cactus-api-gateway:
     image: mac2work/cc-cactus-api-gateway:0.0.1-SNAPSHOT
     mem_limit: 700m
@@ -70,6 +74,7 @@ services:
       - naming-server
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
   naming-server:
     image: mac2work/cc-naming-server:0.0.1-SNAPSHOT
     mem_limit: 700m
@@ -96,7 +101,7 @@ services:
     volumes:
       #- mysql-data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
-  zipkin:
+  zipkin-server:
     image: openzipkin/zipkin
     ports: 
       - "9411:9411"
