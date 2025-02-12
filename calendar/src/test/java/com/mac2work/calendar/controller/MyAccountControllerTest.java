@@ -92,7 +92,7 @@ class MyAccountControllerTest {
 		ResultActions result = mockMvc.perform(get("/calendar/my-account")
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 			.andExpect(model().attribute("exception", exception));
 	}
@@ -115,7 +115,7 @@ class MyAccountControllerTest {
 		ResultActions result = mockMvc.perform(post("/calendar/my-account/choose-city")
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 		.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 		.andExpect(model().attribute("exception", exception));
 	}

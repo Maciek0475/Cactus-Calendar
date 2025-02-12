@@ -14,7 +14,7 @@ public class CactusExceptionHandler {
 	public ModelAndView handleResourceNotFoundException(ResourceNotFoundException exc) {
 		ModelAndView errorPage = new ModelAndView();
 		errorPage.addObject("exception", exc);
-		errorPage.setViewName("error");
+		errorPage.setViewName("custom-error");
 		return errorPage;
 	}
 }

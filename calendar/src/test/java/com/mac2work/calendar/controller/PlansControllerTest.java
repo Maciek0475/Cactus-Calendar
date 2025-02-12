@@ -83,7 +83,7 @@ class PlansControllerTest {
 		ResultActions result = mockMvc.perform(get("/calendar/plans")
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 			.andExpect(model().attribute("exception", exception));
 	}
@@ -106,7 +106,7 @@ class PlansControllerTest {
 		ResultActions result = mockMvc.perform(get("/calendar/plans/remove").param("id", invalidId)
 				.contentType(MediaType.APPLICATION_JSON));
 		
-		result.andExpect(view().name("error"))
+		result.andExpect(view().name("custom-error"))
 			.andExpect(r -> assertTrue(r.getResolvedException() instanceof ResourceNotFoundException))
 			.andExpect(model().attribute("exception", exception));
 	}
