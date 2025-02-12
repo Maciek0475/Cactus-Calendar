@@ -96,6 +96,14 @@ services:
     volumes:
       #- mysql-data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
+  zipkin:
+    image: openzipkin/zipkin
+    ports: 
+      - "9411:9411"
+    networks:
+      - cactus-network
+    depends_on:
+      - naming-server
 networks:
   cactus-network:
 volumes:
