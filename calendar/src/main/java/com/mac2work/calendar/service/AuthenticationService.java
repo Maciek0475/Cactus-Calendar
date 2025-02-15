@@ -19,26 +19,21 @@ public class AuthenticationService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	
-	private Model hasErrors(boolean hasErrors, Model model) {
-		if(hasErrors)
-			model.addAttribute("error", "Invalid data, try again");
-		return model;
-	}
 
 	public String register(UserRequest userRequest, BindingResult result, Model model) {
-		model = hasErrors(result.hasErrors(), model);
-		if(userRepository.findByUsername(userRequest.getUsername()).isPresent())
+		if(userRepository.findByUsername(userRequest.getUsername()).isPresent()) {
 			model.addAttribute("error", "This username is already taken");
-		else {
-			User user = User.builder()
-					.username(userRequest.getUsername())
-					.password(passwordEncoder.encode(userRequest.getPassword()))
-					.role(Role.USER)
-					.build();
-		userRepository.save(user);
-			return "login.html";
+			return "register.html";
 		}
-		return "register.html";
+		if(result.hasErrors())
+			return "register.html";
+		User user = User.builder()
+				.username(userRequest.getUsername())
+				.password(passwordEncoder.encode(userRequest.getPassword()))
+				.role(Role.USER)
+				.build();
+		userRepository.save(user);
+		return "login.html";
 	}
 
 }

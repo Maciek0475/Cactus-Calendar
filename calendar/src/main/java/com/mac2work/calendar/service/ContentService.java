@@ -19,7 +19,9 @@ public class ContentService {
 		if(userResponse.getPlanResponses() != null)
 		planCount = userResponse.getPlanResponses().stream().filter(plan -> plan.isDone() == false).count();
 		String username = userResponse.getUsername();
-		userResponse.setUsername(username.substring(0, username.indexOf('@')));
+		//if username is email
+		//userResponse.setUsername(username.substring(0, username.indexOf('@')));
+		userResponse.setUsername(username);
 		model.addAttribute("user", userResponse);
 		model.addAttribute("undonePlansCount", planCount);
 		return "content.html";

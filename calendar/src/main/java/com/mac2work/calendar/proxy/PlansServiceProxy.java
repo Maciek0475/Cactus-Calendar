@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.mac2work.cactus_library.request.PlanRequest;
 import com.mac2work.cactus_library.response.PlanResponse;
 
-@FeignClient(name="PLANS", configuration = {PlansServiceFeignConfig.class})
+@FeignClient(name="PLANS-SERVICE", configuration = {PlansServiceFeignConfig.class})
 public interface PlansServiceProxy {
 	@DeleteMapping("/api/plans/{id}")
 	void deletePlan(@PathVariable Long id);
