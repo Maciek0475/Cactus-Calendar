@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.mac2work.cactus_library.request.UserRequest;
 import com.mac2work.calendar.service.AuthenticationService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -26,7 +27,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/register")
-	public String registerNewUser(UserRequest userRequest, BindingResult result, Model model) {
+	public String registerNewUser(@Valid UserRequest userRequest, BindingResult result, Model model) {
 		return authenticationService.register(userRequest, result, model);
 	}
 
